@@ -1,34 +1,48 @@
 import "./User.css";
-
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 const User = (props) => {
-  const [Values, setValues] = useState({
-    name: "",
-    Email: "",
-    date: "",
-    id: "",
-    startTime: "",
-    endTime: "",
+  const [values, setValues] = useState({
+    name: "anupam",
+    Email: "anupam@gmail.com",
+    date: "2022-01-15",
+    id: "1",
+    startTime: "2",
+    endTime: "4",
   });
 
+  const [EndTimeList, setEndTimeList] = useState([]);
   const [isValidName, setisValidName] = useState(true);
   const [isValidEmail, setisValidEmail] = useState(true);
+  const timeSlot = [
+    { key: "1", status: 1 },
+    { key: "2", status: 1 },
+    { key: "3", status: 1 },
+    { key: "4", status: 1 },
+    { key: "5", status: 1 },
+    { key: "6", status: 1 },
+    { key: "7", status: 1 },
+    { key: "8", status: 1 },
+    { key: "9", status: 1 },
+    { key: "10", status: 1 },
+    { key: "11", status: 1 },
+  ];
+  const [AvailableTime, setAvailableTime] = useState(timeSlot);
 
   //FirstName verifying and Handling
   const nameChangeHandler = (event) => {
-    if (Values.name.length > 0) {
+    if (values.name.length > 0) {
       setisValidName(true);
     }
     setValues((prevState) => {
       return { ...prevState, name: event.target.value };
     });
   };
+
   //Email verifying and Handling
   const emailChangeHandler = (event) => {
-    if (Values.Email.length > 0) {
+    if (values.Email.length > 0) {
       setisValidEmail(true);
     }
 
@@ -36,8 +50,10 @@ const User = (props) => {
       return { ...prevState, Email: event.target.value };
     });
   };
+
   //date changeHandler
   const dateChangeHandller = (event) => {
+    console.log(event.target.value);
     setValues((prevState) => {
       return {
         ...prevState,
@@ -46,8 +62,22 @@ const User = (props) => {
     });
   };
 
-  const time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const [EndTimeList, setEndTimeList] = useState([]);
+  //Available time Handler
+  const availableTimeHandler = () => {
+    let newAvailableTime = [];
+
+    console.log(values.startTime === "2");
+    for (let i = 0; i < timeSlot.length; i++) {
+      if (
+        timeSlot[i].key !== values.startTime &&
+        timeSlot[i].key !== values.endTime
+      ) {
+        newAvailableTime.push(timeSlot[i]);
+      }
+    }
+
+    setAvailableTime(newAvailableTime);
+  };
 
   //Start time handler
   const startTimeHandler = (event) => {
@@ -58,9 +88,9 @@ const User = (props) => {
 
   // declaring the Time array for the EndTime dropdown
   useEffect(() => {
-    const temp = time.filter((e) => e > Values.startTime);
+    const temp = AvailableTime.filter((e) => e.key > values.startTime);
     setEndTimeList(temp);
-  }, [Values.startTime]);
+  }, [values.startTime]);
 
   //EndTime Handler
   const endTimeHandler = (event) => {
@@ -72,20 +102,23 @@ const User = (props) => {
   const submitFormHandler = (event) => {
     event.preventDefault();
 
-    if (Values.name.length === 0) {
+    if (values.name.length === 0) {
       setisValidName(false);
       return;
     }
-    if (Values.Email.length === 0) {
+    if (values.Email.length === 0) {
       setisValidEmail(false);
       return;
     }
-    const tempObject = { ...Values, id: Math.random().toString() };
+    const tempObject = { ...values, id: Math.random().toString() };
 
-    // getData(Values);
-    alert("request received");
+    // getData(values);
+    // alert("request received");
     console.log(tempObject);
     props.onAddBooking(tempObject);
+
+    // Status updating
+    availableTimeHandler();
 
     setValues((prevState) => {
       return {
@@ -112,13 +145,13 @@ const User = (props) => {
           className={`form-field ${!isValidName ? "invalid" : ""}`}
           onChange={nameChangeHandler}
           placeholder="Enter Your Name"
-          value={Values.name}
+          value={values.name}
         ></input>
         <input
           type="email"
           className={`form-field ${!isValidEmail ? "invalid" : ""}`}
           placeholder="Enter Your Email"
-          value={Values.Email}
+          value={values.Email}
           onChange={emailChangeHandler}
         ></input>
         <div className="user-input">
@@ -128,7 +161,7 @@ const User = (props) => {
           <input
             type="date"
             className="input-date "
-            value={Values.date}
+            value={values.date}
             onChange={dateChangeHandller}
           ></input>
         </div>
@@ -136,9 +169,9 @@ const User = (props) => {
         {/* start time dropdown */}
         <div>
           <label style={{ color: "white" }}>Select the Start Time</label>
-          <select onChange={startTimeHandler} value={Values.startTime}>
-            {time.map((e) => {
-              return <option> {e}</option>;
+          <select onChange={startTimeHandler} value={values.startTime}>
+            {AvailableTime.map((e) => {
+              return <option key={e.key}> {e.key}</option>;
             })}
           </select>
         </div>
@@ -146,9 +179,9 @@ const User = (props) => {
         {/* end time dropdown */}
         <div>
           <label style={{ color: "white" }}>Select the Start Time</label>
-          <select onChange={endTimeHandler} value={Values.endTime}>
+          <select onChange={endTimeHandler} value={values.endTime}>
             {EndTimeList.map((e) => {
-              return <option>{e}</option>;
+              return <option key={e.key}>{e.key}</option>;
             })}
           </select>
         </div>

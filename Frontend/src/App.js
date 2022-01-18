@@ -27,6 +27,7 @@ function App() {
   const [Price, setPrice] = useState(0);
   const [amountGet, setamountGet] = useState(0);
   const [BookingList, setBookingList] = useState(initialList);
+  const [isTrue, setisTrue] = useState(false);
 
   const amountHandler = (amount) => {
     setamountGet(amount);
@@ -34,6 +35,7 @@ function App() {
   };
   //adding the new booking
   const addBookingHandler = (order) => {
+    setisTrue(true);
     setPrice(order.endTime - order.startTime);
 
     setBookingList((prev) => {
@@ -106,7 +108,9 @@ function App() {
       </button>
 
       {/* this is the table section */}
-      <Table bookingList={BookingList} Ondelete={deleteBookingHandler} />
+      {isTrue && (
+        <Table bookingList={BookingList} Ondelete={deleteBookingHandler} />
+      )}
     </div>
   );
 }
