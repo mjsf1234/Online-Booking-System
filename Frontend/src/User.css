@@ -1,0 +1,69 @@
+.form-main {
+  width: 25rem;
+  padding: 2rem 2.5rem 1rem 2.5rem;
+  margin: auto;
+  background-color: rgb(36, 25, 25);
+  box-sizing: border-box;
+  box-shadow: 0 1px 8px;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+.form-field {
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  height: 2rem;
+}
+.form-title {
+  font-size: 1.8rem;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+.form-title label {
+  color: white;
+}
+.form-message {
+  text-align: center;
+  width: 100%;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  height: 6rem;
+}
+.invalid {
+  border-color: red;
+}
+.form-label {
+  color: white;
+  margin-right: 0rem;
+}
+.user-input {
+}
+.input-label {
+  float: left;
+  margin: 0.6rem 0 0.6rem 0;
+}
+.input-label label {
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: "Roboto", sans-serif;
+
+  color: white;
+}
+.input-date {
+  width: 100%;
+  height: 2rem;
+  text-align: center;
+}
+.reciept {
+  background-color: grey;
+  height: 10rem;
+  padding: 2rem;
+}
+.dropdown {
+  width: 100%;
+}
+.dropdown-value {
+  color: white;
+}

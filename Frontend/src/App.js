@@ -1,8 +1,8 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Form from "./Form";
 import { useState } from "react";
 import Amount from "./Amount";
+import User from "./User";
+import Table from "./Table";
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -20,13 +20,30 @@ function loadScript(src) {
 
 const __DEV__ = document.domain === "localhost";
 
+const initialList = [];
+
 function App() {
   //Amount Handler Function
-
+  const [Price, setPrice] = useState(0);
   const [amountGet, setamountGet] = useState(0);
+  const [BookingList, setBookingList] = useState(initialList);
+
   const amountHandler = (amount) => {
     setamountGet(amount);
     console.log("this is from amountHandler" + amountGet);
+  };
+  //adding the new booking
+  const addBookingHandler = (order) => {
+    setPrice(order.endTime - order.startTime);
+
+    setBookingList((prev) => {
+      return [order, ...prev];
+    });
+    console.log("boooking receive: " + JSON.stringify(BookingList));
+  };
+  //deleting the previous booking
+  const deleteBookingHandler = (id) => {
+    setBookingList(BookingList.filter((item) => item.id != id));
   };
 
   async function displayRazorpay() {
@@ -39,7 +56,7 @@ function App() {
       alert("failed to load");
     }
     const bodyData = {
-      amountGet,
+      Price,
     };
     const data = await fetch("http://localhost:8001/razorpay", {
       method: "POST",
@@ -65,9 +82,9 @@ function App() {
         alert(response.razorpay_signature);
       },
       prefill: {
-        name: "Yash Mesharam",
-        email: "gaurav.kumar@example.com",
-        contact: "9999999999",
+        name: "Mrityunjay Saraf",
+        email: "mrityunjaysaraf5678@gmail.com",
+        contact: "9116434230",
       },
     };
     const paymentObject = new window.Razorpay(options);
@@ -76,16 +93,20 @@ function App() {
 
   return (
     <div className="App">
-      <Form />
-      <Amount OnEnter={amountHandler} />
+      <User onAddBooking={addBookingHandler} />
+
+      <Amount amount={Price} onEnter={amountHandler} />
       <button
         className="App-link"
         onClick={displayRazorpay}
         target="_blank"
         rel="noopener noreferrer"
       >
-        Donate {amountGet}$
+        Pay {Price}$
       </button>
+
+      {/* this is the table section */}
+      <Table bookingList={BookingList} Ondelete={deleteBookingHandler} />
     </div>
   );
 }

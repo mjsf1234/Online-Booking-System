@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import Razorpay from "razorpay";
 import Cors from "cors";
-import router from "./Router.js";
+
 import bodyParser from "body-parser";
 
 const razorpay = new Razorpay({
@@ -33,16 +33,10 @@ app.get("/logo", (req, res) => {
   res.sendFile(path.join(__dirname, "logo.svg"));
 });
 
-//testing of API
-app.post("/api/test", (req, res) => {
-  console.log(req.body);
-  res.send(req.body);
-});
-
 app.post("/razorpay", async (req, res) => {
-  console.log("this is reqbody " + req.body.amountGet);
+  console.log("this is reqbody " + req.body.Price);
   const payment_capture = 1;
-  const amount = req.body.amountGet.toString();
+  const amount = req.body.Price.toString();
   const currency = "INR";
   const options = {
     amount: (amount * 100).toString(),
