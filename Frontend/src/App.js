@@ -3,6 +3,7 @@ import { useState } from "react";
 import Amount from "./Amount";
 import User from "./User";
 import Table from "./Table";
+import Calender from "./Calender";
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -106,7 +107,7 @@ function App() {
       >
         Pay {Price}$
       </button>
-
+      <Calender />
       {/* this is the table section */}
       {isTrue && (
         <Table bookingList={BookingList} Ondelete={deleteBookingHandler} />
