@@ -1,60 +1,106 @@
 import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
+import Calender from "./Calender";
+import moment from "moment";
 
 const User = (props) => {
-  const [values, setValues] = useState({
+  const [bookingDetails, setBookingDetails] = useState({
     name: "anupam",
-    Email: "anupam@gmail.com",
+    email: "anupam@gmail.com",
+    bookedSlots: [],
+    id: "",
   });
 
   const [isValidName, setisValidName] = useState(true);
-  const [isValidEmail, setisValidEmail] = useState(true);
+  const [isValidemail, setIsValidEmail] = useState(true);
+  const [userBookedSlot, setUserBookedSlot] = useState([]);
+  const [allBookedSlotList, setAllBookedSlotList] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
+  const [isCalenderVisible, setisCalenderVisible] = useState(false);
+
+  //calender functions
+  const BookedSlotHandler = (object) => {
+    // object=> {"start":"2022-01-20T08:00:00.000Z","end":"2022-01-20T08:00:00.000Z"}
+    const tempUserBookedSlot = object.start;
+    setUserBookedSlot((prev) => {
+      return [...prev, tempUserBookedSlot];
+    });
+
+    setAllBookedSlotList((prev) => {
+      return [...prev, object];
+    });
+  };
+
+  // testing
+  useEffect(() => {
+    console.log("updated userBookedslot => " + userBookedSlot);
+  }, [userBookedSlot]);
+
+  const showCalender = () => {
+    setisCalenderVisible(true);
+  };
+
+  const hideCalender = () => {
+    setisCalenderVisible(false);
+  };
+  //_____________________________________________________________
 
   //FirstName verifying and Handling
   const nameChangeHandler = (event) => {
-    if (values.name.length > 0) {
+    if (bookingDetails.name.length > 0) {
       setisValidName(true);
     }
-    setValues((prevState) => {
+    setBookingDetails((prevState) => {
       return { ...prevState, name: event.target.value };
     });
   };
 
-  //Email verifying and Handling
+  //email verifying and Handling
   const emailChangeHandler = (event) => {
-    if (values.Email.length > 0) {
-      setisValidEmail(true);
+    if (bookingDetails.email.length > 0) {
+      setIsValidEmail(true);
     }
 
-    setValues((prevState) => {
-      return { ...prevState, Email: event.target.value };
+    setBookingDetails((prevState) => {
+      return { ...prevState, email: event.target.value };
     });
   };
 
   const submitFormHandler = (event) => {
     event.preventDefault();
-
-    if (values.name.length === 0) {
+    setisCalenderVisible(false);
+    if (bookingDetails.name.length === 0) {
       setisValidName(false);
       return;
     }
-    if (values.Email.length === 0) {
-      setisValidEmail(false);
+    if (bookingDetails.email.length === 0) {
+      setIsValidEmail(false);
       return;
     }
-    const tempObject = { ...values, id: Math.random().toString() };
+    const tempObject = {
+      ...bookingDetails,
+      bookedSlots: userBookedSlot,
+      id: Math.random().toString(),
+    };
 
-    console.log(tempObject);
+    // const tempObject = {
+    //   ...bookingDetails,
+    //   id: Math.random().toString(),
+    // };
+
+    console.log("Booking Summery: " + JSON.stringify(tempObject));
     props.onAddBooking(tempObject);
 
-    setValues((prevState) => {
+    setBookingDetails((prevState) => {
       return {
         ...prevState,
         name: "",
-        Email: "",
+        email: "",
+        bookedSlots: [],
+        id: "",
       };
     });
+    setUserBookedSlot([]);
   };
 
   return (
@@ -69,13 +115,13 @@ const User = (props) => {
           className={`form-field ${!isValidName ? "invalid" : ""}`}
           onChange={nameChangeHandler}
           placeholder="Enter Your Name"
-          value={values.name}
+          value={bookingDetails.name}
         ></input>
         <input
           type="email"
-          className={`form-field ${!isValidEmail ? "invalid" : ""}`}
-          placeholder="Enter Your Email"
-          value={values.Email}
+          className={`form-field ${!isValidemail ? "invalid" : ""}`}
+          placeholder="Enter Your email"
+          value={bookingDetails.email}
           onChange={emailChangeHandler}
         ></input>
 
@@ -83,6 +129,17 @@ const User = (props) => {
           Submit
         </button>
       </form>
+      {isCalenderVisible ? (
+        <Calender
+          onHide={hideCalender}
+          allBookedSlotList={allBookedSlotList}
+          onAddSlot={BookedSlotHandler}
+        />
+      ) : (
+        <div>
+          <button onClick={showCalender}>Book a Slot</button>
+        </div>
+      )}
     </div>
   );
 };

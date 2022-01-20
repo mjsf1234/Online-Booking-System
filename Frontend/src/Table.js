@@ -2,7 +2,7 @@ import "./Table.css";
 import { React } from "react";
 
 const Table = (props) => {
-  console.log(props.bookingList);
+  console.log(props.bookingDetails);
   return (
     <div>
       <table className="table">
@@ -12,12 +12,12 @@ const Table = (props) => {
             <th>Email</th>
             <th>Date</th>
           </tr>
-          {props.bookingList.map((e) => {
+          {props.bookingDetails.map((e) => {
             return (
               <tr key={e.id}>
                 <th>{e.name}</th>
-                <th>{e.Email}</th>
-                <th>{e.date}</th>
+                <th>{e.email}</th>
+                <th>{e.bookedSlots}</th>
 
                 <th>
                   <button

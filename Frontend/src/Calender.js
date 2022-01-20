@@ -7,7 +7,7 @@ import moment from "moment";
 
 const Calender = (props) => {
   const min = "2022-01-19T00:00";
-  const max = "2022-07-19T00:00";
+  const max = "2022-07-19T00:00"; //to set the max date to the calender
 
   const [selectedDateTime, setselectedDateTime] = useState();
 
@@ -18,13 +18,12 @@ const Calender = (props) => {
     setselectedDateTime(datetime);
   };
 
-  const setInvalidHandler = () => {
-    props.onAddSlot(selectedDateTime);
+  const AddSlotHandler = () => {
     const tempOject = {
       start: selectedDateTime,
       end: selectedDateTime,
     };
-    props.OnAddInvalid(tempOject);
+    props.onAddSlot(tempOject);
   };
 
   const hideCalender = () => {
@@ -45,15 +44,15 @@ const Calender = (props) => {
           stepMinute={60}
           width={null}
           // labels={datetimeInvalid}
-          invalid={props.datetimeInvalid}
+          invalid={props.allBookedSlotList}
           // onPageLoading={onPageLoadingDatetime}
           cssClass="booking-datetime"
           onChange={setDateTimeHandler}
           on
         />
       </div>
-      <button onClick={setInvalidHandler}>Book Slot</button>
-      <button onClick={hideCalender}>cancel</button>
+      <button onClick={AddSlotHandler}>Add Slot</button>
+      <button onClick={hideCalender}>Close</button>
     </Page>
   );
 };
