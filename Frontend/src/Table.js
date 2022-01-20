@@ -11,8 +11,6 @@ const Table = (props) => {
             <th>Name</th>
             <th>Email</th>
             <th>Date</th>
-            <th>Start-Time</th>
-            <th>End-Time</th>
           </tr>
           {props.bookingList.map((e) => {
             return (
@@ -20,8 +18,6 @@ const Table = (props) => {
                 <th>{e.name}</th>
                 <th>{e.Email}</th>
                 <th>{e.date}</th>
-                <th>{e.startTime}</th>
-                <th>{e.endTime}</th>
 
                 <th>
                   <button

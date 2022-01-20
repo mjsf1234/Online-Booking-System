@@ -1,9 +1,10 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Amount from "./Amount";
 import User from "./User";
 import Table from "./Table";
 import Calender from "./Calender";
+import moment from "moment";
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -25,12 +26,22 @@ const initialList = [];
 
 function App() {
   //Amount Handler Function
-  const [Price, setPrice] = useState(0);
-  const [amountGet, setamountGet] = useState(0);
-  const [BookingList, setBookingList] = useState(initialList);
+  const [price, setPrice] = useState(10);
+  const [amountGet, setAmountGet] = useState(0);
+  const [bookingList, setBookingList] = useState([]);
   const [isTrue, setisTrue] = useState(false);
   const [isCalenderVisible, setisCalenderVisible] = useState(false);
+  const [booking, setbooking] = useState([]);
+  const [datetimeInvalid, setDatetimeInvalid] = useState([]);
 
+  const setInvalidTime = (object) => {
+    // object=> {"start":"2022-01-20T08:00:00.000Z","end":"2022-01-20T08:00:00.000Z"}
+    setDatetimeInvalid((prev) => {
+      return [...prev, object];
+    });
+  };
+
+  //  Calender visibility
   const showCalender = () => {
     setisCalenderVisible(true);
   };
@@ -38,23 +49,39 @@ function App() {
     setisCalenderVisible(false);
   };
 
+  const addSlotHandler = (datetimevalue) => {
+    console.log("date receiving  " + datetimevalue);
+    const tempdatetime = new Date(datetimevalue);
+    const datetime = tempdatetime.toGMTString();
+
+    setbooking((prev) => {
+      return [...prev, datetime];
+    });
+  };
+
+  useEffect(() => {
+    console.log("added slot list " + booking);
+  }, [booking]);
+
   const amountHandler = (amount) => {
-    setamountGet(amount);
+    setAmountGet(amount);
     console.log("this is from amountHandler" + amountGet);
   };
   //adding the new booking
   const addBookingHandler = (order) => {
+    console.log("order " + JSON.stringify(order)); // {"name":"anupam","Email":"anupam@gmail.com","id":"0.9742311685374838"}
+    const tempObject = { ...order, date: booking };
     setisTrue(true);
-    setPrice(order.endTime - order.startTime);
+    // setPrice("10");
 
     setBookingList((prev) => {
-      return [order, ...prev];
+      return [tempObject, ...prev];
     });
-    console.log("boooking receive: " + JSON.stringify(BookingList));
+    console.log("boooking receive: " + JSON.stringify(bookingList));
   };
   //deleting the previous booking
   const deleteBookingHandler = (id) => {
-    setBookingList(BookingList.filter((item) => item.id != id));
+    setBookingList(bookingList.filter((item) => item.id != id));
   };
 
   async function displayRazorpay() {
@@ -67,7 +94,7 @@ function App() {
       alert("failed to load");
     }
     const bodyData = {
-      Price,
+      price,
     };
     const data = await fetch("http://localhost:8001/razorpay", {
       method: "POST",
@@ -106,18 +133,23 @@ function App() {
     <div className="App">
       <User onAddBooking={addBookingHandler} />
 
-      <Amount amount={Price} onEnter={amountHandler} />
+      <Amount amount={price} onEnter={amountHandler} />
       <button
         className="App-link"
         onClick={displayRazorpay}
         target="_blank"
         rel="noopener noreferrer"
       >
-        Pay {Price}$
+        Pay {price}$
       </button>
 
       {isCalenderVisible ? (
-        <Calender onHide={hideCalender} />
+        <Calender
+          onHide={hideCalender}
+          onAddSlot={addSlotHandler}
+          datetimeInvalid={datetimeInvalid}
+          OnAddInvalid={setInvalidTime}
+        />
       ) : (
         <div>
           <button onClick={showCalender}>Book a Slot</button>
@@ -126,7 +158,7 @@ function App() {
 
       {/* this is the table section */}
       {isTrue && (
-        <Table bookingList={BookingList} Ondelete={deleteBookingHandler} />
+        <Table bookingList={bookingList} Ondelete={deleteBookingHandler} />
       )}
     </div>
   );
