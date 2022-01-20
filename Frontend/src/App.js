@@ -29,6 +29,14 @@ function App() {
   const [amountGet, setamountGet] = useState(0);
   const [BookingList, setBookingList] = useState(initialList);
   const [isTrue, setisTrue] = useState(false);
+  const [isCalenderVisible, setisCalenderVisible] = useState(false);
+
+  const showCalender = () => {
+    setisCalenderVisible(true);
+  };
+  const hideCalender = () => {
+    setisCalenderVisible(false);
+  };
 
   const amountHandler = (amount) => {
     setamountGet(amount);
@@ -107,7 +115,15 @@ function App() {
       >
         Pay {Price}$
       </button>
-      <Calender />
+
+      {isCalenderVisible ? (
+        <Calender onHide={hideCalender} />
+      ) : (
+        <div>
+          <button onClick={showCalender}>Book a Slot</button>
+        </div>
+      )}
+
       {/* this is the table section */}
       {isTrue && (
         <Table bookingList={BookingList} Ondelete={deleteBookingHandler} />
