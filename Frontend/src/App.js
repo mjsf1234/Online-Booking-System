@@ -20,14 +20,12 @@ function loadScript(src) {
 
 const __DEV__ = document.domain === "localhost";
 
-const initialList = [];
-
 function App() {
   //Amount Handler Function
   const [price, setPrice] = useState(10);
   const [amountGet, setAmountGet] = useState(0);
-  const [bookingDetails, setBookingDetails] = useState([]); //  [ {name, emails, dates id}  ]
-  const [isTrue, setisTrue] = useState(false);
+  const [showTable, setShowTable] = useState(false);
+  const [bookingData, setBookingData] = useState([]); //  [ {name, emails, bookedSlots:[], id},  ]
 
   const amountHandler = (amount) => {
     setAmountGet(amount);
@@ -37,20 +35,21 @@ function App() {
   const addBookingHandler = (order) => {
     console.log("order " + JSON.stringify(order)); // {"name":"anupam","Email":"anupam@gmail.com","id":"0.9742311685374838", bookedSlots:[] }
 
-    setisTrue(true);
+    setShowTable(true);
     // setPrice("10");
 
-    setBookingDetails((prev) => {
+    setBookingData((prev) => {
       return [order, ...prev];
     });
   };
 
   useEffect(() => {
-    console.log("All Bookings are: " + JSON.stringify(bookingDetails));
-  }, [bookingDetails]);
+    console.log("All Bookings are: " + JSON.stringify(bookingData));
+  }, [bookingData]);
+
   //deleting the previous booking
   const deleteBookingHandler = (id) => {
-    setBookingDetails(bookingDetails.filter((item) => item.id != id));
+    setBookingData(bookingData.filter((item) => item.id != id));
   };
 
   async function displayRazorpay() {
@@ -100,7 +99,7 @@ function App() {
 
   return (
     <div className="App">
-      <User onAddBooking={addBookingHandler} />
+      <User onAddBooking={addBookingHandler} bookingData={bookingData} />
 
       <Amount amount={price} onEnter={amountHandler} />
       <button
@@ -113,11 +112,8 @@ function App() {
       </button>
 
       {/* this is the table section */}
-      {isTrue && (
-        <Table
-          bookingDetails={bookingDetails}
-          Ondelete={deleteBookingHandler}
-        />
+      {showTable && (
+        <Table bookingData={bookingData} onDelete={deleteBookingHandler} />
       )}
     </div>
   );

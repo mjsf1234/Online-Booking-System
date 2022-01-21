@@ -2,107 +2,101 @@ import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
 import Calender from "./Calender";
-import moment from "moment";
 
-const User = (props) => {
-  const [bookingDetails, setBookingDetails] = useState({
-    name: "anupam",
-    email: "anupam@gmail.com",
-    bookedSlots: [],
-    id: "",
-  });
+const INIT_SESSION_DETAILS = {
+  name: "anupam",
+  email: "anupam@gmail.com",
+  bookedSlots: [],
+  id: "",
+};
 
+const User = ({ onAddBooking, bookingData }) => {
+  const [sessionDetails, setSessionDetails] = useState(INIT_SESSION_DETAILS);
   const [isValidName, setisValidName] = useState(true);
   const [isValidemail, setIsValidEmail] = useState(true);
   const [userBookedSlot, setUserBookedSlot] = useState([]);
-  const [allBookedSlotList, setAllBookedSlotList] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
   const [isCalenderVisible, setisCalenderVisible] = useState(false);
-
+  const [allFilledSlots, setAllFilledSlots] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
+  const [t, setT] = useState(true);
   //calender functions
-  const BookedSlotHandler = (object) => {
+  const onAddSlot = (sessionObject) => {
     // object=> {"start":"2022-01-20T08:00:00.000Z","end":"2022-01-20T08:00:00.000Z"}
-    const tempUserBookedSlot = object.start;
+
+    //session state
     setUserBookedSlot((prev) => {
-      return [...prev, tempUserBookedSlot];
+      return [...prev, sessionObject.start];
     });
-
-    setAllBookedSlotList((prev) => {
-      return [...prev, object];
+    //
+    setAllFilledSlots((prev) => {
+      return [...prev, sessionObject];
     });
   };
 
-  // testing
-  useEffect(() => {
-    console.log("updated userBookedslot => " + userBookedSlot);
-  }, [userBookedSlot]);
-
-  const showCalender = () => {
-    setisCalenderVisible(true);
-  };
-
-  const hideCalender = () => {
-    setisCalenderVisible(false);
-  };
-  //_____________________________________________________________
+  const showCalender = () => setisCalenderVisible(true);
+  const hideCalender = () => setisCalenderVisible(false);
 
   //FirstName verifying and Handling
-  const nameChangeHandler = (event) => {
-    if (bookingDetails.name.length > 0) {
+  const nameChangeHandler = (e) => {
+    if (sessionDetails.name.length > 0) {
       setisValidName(true);
     }
-    setBookingDetails((prevState) => {
-      return { ...prevState, name: event.target.value };
+    setSessionDetails((prevState) => {
+      return { ...prevState, name: e.target.value };
     });
   };
 
   //email verifying and Handling
-  const emailChangeHandler = (event) => {
-    if (bookingDetails.email.length > 0) {
+  const emailChangeHandler = (e) => {
+    if (sessionDetails.email.length > 0) {
       setIsValidEmail(true);
     }
 
-    setBookingDetails((prevState) => {
-      return { ...prevState, email: event.target.value };
+    setSessionDetails((prevState) => {
+      return { ...prevState, email: e.target.value };
     });
   };
 
-  const submitFormHandler = (event) => {
-    event.preventDefault();
-    console.log("component re-render");
+  const submitFormHandler = (e) => {
+    e.preventDefault();
+
     setisCalenderVisible(false);
-    if (bookingDetails.name.length === 0) {
+
+    // Validating inputs
+    if (sessionDetails.name.length === 0) {
       setisValidName(false);
       return;
     }
-    if (bookingDetails.email.length === 0) {
+    if (sessionDetails.email.length === 0) {
       setIsValidEmail(false);
       return;
     }
-    const tempObject = {
-      ...bookingDetails,
+    const tempUserBookings = {
+      ...sessionDetails,
       bookedSlots: userBookedSlot,
       id: Math.random().toString(),
     };
 
-    // const tempObject = {
-    //   ...bookingDetails,
-    //   id: Math.random().toString(),
-    // };
+    onAddBooking(tempUserBookings);
 
-    console.log("Booking Summery: " + JSON.stringify(tempObject));
-    props.onAddBooking(tempObject);
-
-    setBookingDetails((prevState) => {
-      return {
-        ...prevState,
-        name: "",
-        email: "",
-        bookedSlots: [],
-        id: "",
-      };
-    });
+    setSessionDetails(INIT_SESSION_DETAILS);
     setUserBookedSlot([]);
+    setT(!t);
   };
+
+  useEffect(() => {
+    // taking data from the bookingdata(App.js) initially
+    let tempAllBookedSlots = [];
+    for (let i = 0; i < bookingData.length; i++) {
+      for (let j = 0; j < bookingData[i].bookedSlots.length; j++) {
+        tempAllBookedSlots.push({
+          start: new Date(bookingData[i].bookedSlots[j]).toISOString(),
+          end: new Date(bookingData[i].bookedSlots[j]),
+        });
+      }
+    }
+    setAllFilledSlots(tempAllBookedSlots);
+    console.log("intially data loaded as =>", tempAllBookedSlots);
+  }, [t]);
 
   return (
     <div className="form-main">
@@ -116,26 +110,27 @@ const User = (props) => {
           className={`form-field ${!isValidName ? "invalid" : ""}`}
           onChange={nameChangeHandler}
           placeholder="Enter Your Name"
-          value={bookingDetails.name}
+          value={sessionDetails.name}
         ></input>
         <input
           type="email"
           className={`form-field ${!isValidemail ? "invalid" : ""}`}
           placeholder="Enter Your email"
-          value={bookingDetails.email}
+          value={sessionDetails.email}
           onChange={emailChangeHandler}
         ></input>
         {isCalenderVisible ? (
           <Calender
             onHide={hideCalender}
-            allBookedSlotList={allBookedSlotList}
-            onAddSlot={BookedSlotHandler}
+            allFilledSlots={allFilledSlots}
+            onAddSlot={onAddSlot}
           />
         ) : (
           <div>
             <button onClick={showCalender}>Book a Slot</button>
           </div>
         )}
+
         <button type="submit" className="btn-submit">
           Submit
         </button>

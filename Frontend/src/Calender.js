@@ -5,7 +5,7 @@ import "@mobiscroll/react/dist/css/mobiscroll.min.css";
 import { Datepicker, Page } from "@mobiscroll/react";
 import moment from "moment";
 
-const Calender = (props) => {
+const Calender = ({ onAddSlot, onHide, allFilledSlots }) => {
   const min = "2022-01-19T00:00";
   const max = "2022-07-19T00:00"; //to set the max date to the calender
 
@@ -24,12 +24,16 @@ const Calender = (props) => {
       start: selectedDateTime,
       end: selectedDateTime,
     };
-    props.onAddSlot(tempOject);
+    onAddSlot(tempOject);
   };
 
   const hideCalender = () => {
-    props.onHide();
+    onHide();
   };
+
+  useEffect(() => {
+    console.log("calender page: " + JSON.stringify(allFilledSlots));
+  }, [allFilledSlots]);
 
   return (
     <Page className="md-calendar-booking">
@@ -45,7 +49,7 @@ const Calender = (props) => {
           stepMinute={60}
           width={null}
           // labels={datetimeInvalid}
-          invalid={props.allBookedSlotList}
+          invalid={allFilledSlots}
           // onPageLoading={onPageLoadingDatetime}
           cssClass="booking-datetime"
           onChange={setDateTimeHandler}
