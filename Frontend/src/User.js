@@ -17,7 +17,7 @@ const User = ({ onAddBooking, bookingData }) => {
   const [userBookedSlot, setUserBookedSlot] = useState([]);
   const [isCalenderVisible, setisCalenderVisible] = useState(false);
   const [allFilledSlots, setAllFilledSlots] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
-  const [t, setT] = useState(true);
+
   //calender functions
   const onAddSlot = (sessionObject) => {
     // object=> {"start":"2022-01-20T08:00:00.000Z","end":"2022-01-20T08:00:00.000Z"}
@@ -80,7 +80,6 @@ const User = ({ onAddBooking, bookingData }) => {
 
     setSessionDetails(INIT_SESSION_DETAILS);
     setUserBookedSlot([]);
-    setT(!t);
   };
 
   useEffect(() => {
@@ -90,13 +89,13 @@ const User = ({ onAddBooking, bookingData }) => {
       for (let j = 0; j < bookingData[i].bookedSlots.length; j++) {
         tempAllBookedSlots.push({
           start: new Date(bookingData[i].bookedSlots[j]).toISOString(),
-          end: new Date(bookingData[i].bookedSlots[j]),
+          end: new Date(bookingData[i].bookedSlots[j]).toISOString(),
         });
       }
     }
     setAllFilledSlots(tempAllBookedSlots);
     console.log("intially data loaded as =>", tempAllBookedSlots);
-  }, [t]);
+  }, [bookingData]);
 
   return (
     <div className="form-main">
