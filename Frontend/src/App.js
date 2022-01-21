@@ -19,6 +19,7 @@ function loadScript(src) {
 }
 
 const __DEV__ = document.domain === "localhost";
+const url = "http://localhost:5000/";
 
 function App() {
   //Amount Handler Function
@@ -64,7 +65,7 @@ function App() {
     const bodyData = {
       price,
     };
-    const data = await fetch("http://localhost:8001/razorpay", {
+    const data = await fetch(url + "razorpay", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -80,9 +81,10 @@ function App() {
       order_id: data.id,
       name: "test",
       description: "Test Transaction",
-      image: "http://localhost:8001/logo",
+      image: url,
 
       handler: function (response) {
+        // Pass these into a receipt page.
         alert(response.razorpay_payment_id);
         alert(response.razorpay_order_id);
         alert(response.razorpay_signature);
