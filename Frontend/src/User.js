@@ -68,6 +68,7 @@ const User = (props) => {
 
   const submitFormHandler = (event) => {
     event.preventDefault();
+    console.log("component re-render");
     setisCalenderVisible(false);
     if (bookingDetails.name.length === 0) {
       setisValidName(false);
@@ -124,22 +125,21 @@ const User = (props) => {
           value={bookingDetails.email}
           onChange={emailChangeHandler}
         ></input>
-
+        {isCalenderVisible ? (
+          <Calender
+            onHide={hideCalender}
+            allBookedSlotList={allBookedSlotList}
+            onAddSlot={BookedSlotHandler}
+          />
+        ) : (
+          <div>
+            <button onClick={showCalender}>Book a Slot</button>
+          </div>
+        )}
         <button type="submit" className="btn-submit">
           Submit
         </button>
       </form>
-      {isCalenderVisible ? (
-        <Calender
-          onHide={hideCalender}
-          allBookedSlotList={allBookedSlotList}
-          onAddSlot={BookedSlotHandler}
-        />
-      ) : (
-        <div>
-          <button onClick={showCalender}>Book a Slot</button>
-        </div>
-      )}
     </div>
   );
 };

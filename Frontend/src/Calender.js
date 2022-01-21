@@ -18,7 +18,8 @@ const Calender = (props) => {
     setselectedDateTime(datetime);
   };
 
-  const AddSlotHandler = () => {
+  const AddSlotHandler = (event) => {
+    event.preventDefault();
     const tempOject = {
       start: selectedDateTime,
       end: selectedDateTime,

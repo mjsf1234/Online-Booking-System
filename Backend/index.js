@@ -18,9 +18,9 @@ app.use(express.json());
 
 //Handling to any Post request made to this endpoint from axios
 app.post("/api/payment", (req, res) => {
-  const amount = req.body.enteredAmount;
-  res.send(amount);
+  const amount = req.body.enteredAmount.toString();
   getAmount(amount);
+  res.send(amount);
 });
 const getAmount = (amount) => {
   console.log("function call " + amount);
