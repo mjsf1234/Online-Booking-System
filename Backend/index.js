@@ -12,9 +12,11 @@ const razorpay = new Razorpay({
 
 const app = express();
 const port = process.env.PORT || 8001;
-app.use(Cors());
 app.use(bodyParser.json());
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors({ credentials: true, origin: true })); // Use this after the variable declaration
 
 //Handling to any Post request made to this endpoint from axios
 app.post("/api/payment", (req, res) => {

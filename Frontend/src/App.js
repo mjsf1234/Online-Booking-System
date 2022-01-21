@@ -85,6 +85,8 @@ function App() {
 
       handler: function (response) {
         // Pass these into a receipt page.
+
+        // history.push(<Recitp);
         alert(response.razorpay_payment_id);
         alert(response.razorpay_order_id);
         alert(response.razorpay_signature);
