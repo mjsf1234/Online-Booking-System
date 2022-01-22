@@ -1,4 +1,4 @@
-import React from "react";
+import React, { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -6,18 +6,9 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./index.css";
 
 ReactDOM.render(
-  <BrowserRouter>
-    {/* <Navbar /> */}
-    <div className="container mt-2" style={{ marginTop: 40 }}>
-      <Routes>
-        <Route exact path="/">
-          {/* <App /> */}
-          <div>Hello guys</div>
-        </Route>
-        <Route path="/receipt">{/* <Receipt /> */}</Route>
-      </Routes>
-    </div>
-  </BrowserRouter>,
+  <StrictMode>
+    <App />
+  </StrictMode>,
   document.getElementById("root")
 );
 

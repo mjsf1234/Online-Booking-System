@@ -1,9 +1,20 @@
 import "./Table.css";
-import { React } from "react";
+import { React, useState } from "react";
 import { Table } from "reactstrap";
 
 const DisplayTable = ({ bookingData, onDelete }) => {
+  const [dates, setDates] = useState("");
   console.log(bookingData);
+  // converting the ISO date string to simple date
+  const getDate = (value) => {
+    let dates = " ";
+    const date = new Date(value);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    dates = dates + hours + " on " + day + "/" + month;
+    return dates;
+  };
   return (
     <div className="table-main">
       <h2>Bookings Details</h2>
@@ -23,7 +34,11 @@ const DisplayTable = ({ bookingData, onDelete }) => {
               <tr key={index}>
                 <td>{e.name}</td>
                 <td>{e.email}</td>
-                <td>{e.bookedSlots}</td>
+                <td>
+                  {e.bookedSlots.map((d) => {
+                    return <p>{getDate(d)}</p>;
+                  })}
+                </td>
 
                 <th>
                   <button

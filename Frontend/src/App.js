@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Amount from "./Amount";
 import User from "./User";
 import Table from "./Table";
+import axios from "axios";
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -55,6 +56,9 @@ function App() {
 
   async function displayRazorpay() {
     console.log("clicked");
+
+    // posting the date to mongodb
+    const instance = axios.create();
 
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
@@ -116,7 +120,7 @@ function App() {
       </button>
 
       {/* this is the table section */}
-      {showTable && (
+      {showTable && bookingData.length > 0 && (
         <Table bookingData={bookingData} onDelete={deleteBookingHandler} />
       )}
     </div>
