@@ -2,6 +2,7 @@ import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
 import Calender from "./Calender";
+import axios from "axios";
 
 const INIT_SESSION_DETAILS = {
   name: "anupam",
@@ -68,6 +69,10 @@ const User = ({ onAddBooking, bookingData }) => {
     }
     if (sessionDetails.email.length === 0) {
       setIsValidEmail(false);
+      return;
+    }
+    if (userBookedSlot.length === 0) {
+      alert("please choose the slot");
       return;
     }
     const tempUserBookings = {

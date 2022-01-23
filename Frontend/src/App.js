@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Amount from "./Amount";
 import User from "./User";
 import Table from "./Table";
-import axios from "axios";
+import axios from "./axios";
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -54,12 +54,28 @@ function App() {
     setBookingData(bookingData.filter((item) => item.id != id));
   };
 
+  // getting the data from the mongodb
+  useEffect(() => {
+    async function getBookingData() {
+      const res = await axios
+        .get("/addData")
+        .then(() => {
+          console.log("data is received successfully!!");
+        })
+        .catch((e) => {
+          console.log("error in getting the data", e);
+        });
+      console.log("booking detail recieve fromt the database is " + res.data);
+    }
+    getBookingData();
+  }, []);
+
+  //sending the data to mongoodb
+  useEffect(() => {}, [bookingData]);
+
+  // Razorpay function don't change this
   async function displayRazorpay() {
     console.log("clicked");
-
-    // posting the date to mongodb
-    const instance = axios.create();
-
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );

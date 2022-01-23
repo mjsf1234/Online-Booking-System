@@ -9,10 +9,14 @@ const DisplayTable = ({ bookingData, onDelete }) => {
   const getDate = (value) => {
     let dates = " ";
     const date = new Date(value);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = date.getHours();
-    dates = dates + hours + " on " + day + "/" + month;
+    // const month = date.getMonth() + 1;
+    // const day = date.getDate();
+    // const hours = date.getHours();
+    // dates = dates + hours + " on " + day + "/" + month;
+    dates =
+      date.toGMTString().slice(17, 22) +
+      "  on " +
+      date.toGMTString().slice(5, 12);
     return dates;
   };
   return (
@@ -35,8 +39,8 @@ const DisplayTable = ({ bookingData, onDelete }) => {
                 <td>{e.name}</td>
                 <td>{e.email}</td>
                 <td>
-                  {e.bookedSlots.map((d) => {
-                    return <p>{getDate(d)}</p>;
+                  {e.bookedSlots.map((d, i) => {
+                    return <p key={i}>{getDate(d)}</p>;
                   })}
                 </td>
 

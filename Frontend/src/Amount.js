@@ -1,13 +1,13 @@
 import "./Amount.css";
 
-import axios from "axios";
+import axios from "./axios";
 
-const url = "http://localhost:5000/";
+// const url = "http://localhost:5000/";
 
 const Amount = (props) => {
   const getData = (data) => {
     axios
-      .post(url + "api/payment", data)
+      .post("/api/payment", data)
       .then((res) => console.log("axios amountEntered " + res.data))
       .catch((e) => console.log("axios error " + e));
   };
