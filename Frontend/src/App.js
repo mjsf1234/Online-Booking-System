@@ -27,7 +27,7 @@ function App() {
   const [price, setPrice] = useState(10);
   const [amountGet, setAmountGet] = useState(0);
 
-  const [temp, setTemp] = useState([]);
+  const [temp, setTemp] = useState();
   const [showTable, setShowTable] = useState(false);
   const [bookingData, setBookingData] = useState([]); //  [ {name, emails, bookedSlots:[], id},  ]
 
@@ -41,6 +41,18 @@ function App() {
 
     setShowTable(true);
     // setPrice("10");
+
+    //sending data to endpoint using axios
+    axios
+      .post("/addData", order)
+      .then((res) => {
+        console.log(
+          "data is successfully send to endpoint" + JSON.stringify(res.data)
+        );
+      })
+      .catch((e) => {
+        console.log("error in sending the data " + e);
+      });
 
     setBookingData((prev) => {
       return [order, ...prev];
@@ -60,20 +72,15 @@ function App() {
   useEffect(() => {
     async function getBookingData() {
       const req = await axios.get("/addData");
-      // .then(() => {
-      //   setTemp(req);
-      // })
-      // .catch((e) => {
-      //   console.log("error in getting the data", e);
-      // });
-      setTemp(req.data);
+      const data = await req.data;
+      setTemp(data);
       console.log(
-        "booking detail recieve fromt the database is " +
-          JSON.stringify(req.data)
+        "booking detail recieve from the database is " +
+          JSON.stringify(req.body)
       );
     }
     getBookingData();
-  }, []);
+  }, [bookingData]);
 
   //sending the data to mongoodb
   useEffect(() => {}, [bookingData]);

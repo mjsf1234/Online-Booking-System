@@ -75,6 +75,14 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "logo.svg"));
 });
 
+//handling the invalid api request
+app.all("/*", (req, res) => {
+  res.status(400).json({
+    success: 204,
+    message: "invalid",
+  });
+});
+
 app.post("/razorpay", async (req, res) => {
   console.log("this is reqbody " + req.body.price);
   const payment_capture = 1;

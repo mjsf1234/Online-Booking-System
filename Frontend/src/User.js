@@ -5,8 +5,8 @@ import Calender from "./Calender";
 import axios from "axios";
 
 const INIT_SESSION_DETAILS = {
-  name: "anupam",
-  email: "anupam@gmail.com",
+  name: "Yash Saraf",
+  email: "yashsaraf@gmail.com",
   bookedSlots: [],
   id: "",
 };

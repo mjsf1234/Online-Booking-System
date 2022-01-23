@@ -38,7 +38,7 @@ const Calender = ({ onAddSlot, onHide, allFilledSlots }) => {
   return (
     <Page className="md-calendar-booking">
       <div className="mbsc-form-group">
-        <div className="mbsc-form-group-title">Select date & time</div>
+        <div className="mbsc-form-group-title">Please Select Date and Dime</div>
         <Datepicker
           display="inline"
           controls={["calendar", "timegrid"]}

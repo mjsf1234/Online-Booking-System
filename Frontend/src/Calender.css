@@ -21,3 +21,15 @@
 .md-calendar-booking .mbsc-timegrid-container {
   top: 30px;
 }
+s .md-calendar-booking {
+  border: solid 0.09rem black;
+}
+.mbsc-form-group-title {
+  font-size: 1.2rem !important;
+  font-weight: bold;
+  font-family: "Roboto", sans-serif;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+.mbsc-form-group {
+}
