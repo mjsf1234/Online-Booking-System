@@ -12,7 +12,9 @@
   width: 100%;
   border-radius: 4px;
   margin-bottom: 10px;
-  height: 2rem;
+  height: 3rem;
+  font-size: 1.1rem;
+  font-family: "Roboto", sans-serif;
 }
 .form-title {
   font-size: 1.8rem;
@@ -38,8 +40,7 @@
   color: white;
   margin-right: 0rem;
 }
-.user-input {
-}
+
 .input-label {
   float: left;
   margin: 0.6rem 0 0.6rem 0;
@@ -66,4 +67,17 @@
 }
 .dropdown-value {
   color: white;
+}
+.btn-submit {
+  margin: 1rem 0 0 0;
+
+  background-color: green;
+  color: white;
+
+  width: 100%;
+  border-radius: 4px;
+  font-weight: bold;
+  height: 3rem;
+  font-size: 1.3rem;
+  font-family: "Roboto", sans-serif;
 }

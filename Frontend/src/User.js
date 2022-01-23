@@ -136,7 +136,7 @@ const User = ({ onAddBooking, bookingData }) => {
         )}
 
         <button type="submit" className="btn-submit">
-          Submit
+          Book Appointment
         </button>
       </form>
     </div>
