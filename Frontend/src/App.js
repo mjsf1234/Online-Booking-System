@@ -26,6 +26,8 @@ function App() {
   //Amount Handler Function
   const [price, setPrice] = useState(10);
   const [amountGet, setAmountGet] = useState(0);
+
+  const [temp, setTemp] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [bookingData, setBookingData] = useState([]); //  [ {name, emails, bookedSlots:[], id},  ]
 
@@ -57,15 +59,18 @@ function App() {
   // getting the data from the mongodb
   useEffect(() => {
     async function getBookingData() {
-      const res = await axios
-        .get("/addData")
-        .then(() => {
-          console.log("data is received successfully!!");
-        })
-        .catch((e) => {
-          console.log("error in getting the data", e);
-        });
-      console.log("booking detail recieve fromt the database is " + res.data);
+      const req = await axios.get("/addData");
+      // .then(() => {
+      //   setTemp(req);
+      // })
+      // .catch((e) => {
+      //   console.log("error in getting the data", e);
+      // });
+      setTemp(req.data);
+      console.log(
+        "booking detail recieve fromt the database is " +
+          JSON.stringify(req.data)
+      );
     }
     getBookingData();
   }, []);
