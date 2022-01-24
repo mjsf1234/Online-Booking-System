@@ -5,4 +5,4 @@ const bookingSchema = mongoose.Schema({
   bookedSlots: [],
   id: String,
 });
-export default mongoose.model("Data", bookingSchema);
+export default mongoose.model("userData", bookingSchema);

@@ -27,7 +27,7 @@ function App() {
   const [price, setPrice] = useState(10);
   const [amountGet, setAmountGet] = useState(0);
 
-  const [temp, setTemp] = useState();
+  const [temp, setTemp] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [bookingData, setBookingData] = useState([]); //  [ {name, emails, bookedSlots:[], id},  ]
 
@@ -66,13 +66,15 @@ function App() {
   //deleting the previous booking
   const deleteBookingHandler = (id) => {
     setBookingData(bookingData.filter((item) => item.id != id));
+    const newData = axios.get("/delete", { params: { id: id } });
+    console.log("new data receive form database is " + JSON.stringify(newData));
   };
 
   // getting the data from the mongodb
   useEffect(() => {
     async function getBookingData() {
       const req = await axios.get("/addData");
-      const data = await req.data;
+      const data = req.data;
       setTemp(data);
       console.log(
         "booking detail recieve from the database is " +
@@ -83,7 +85,9 @@ function App() {
   }, [bookingData]);
 
   //sending the data to mongoodb
-  useEffect(() => {}, [bookingData]);
+  useEffect(() => {
+    console.log("data to send to database " + JSON.stringify(temp));
+  }, [bookingData]);
 
   // Razorpay function don't change this
   async function displayRazorpay() {
@@ -148,9 +152,10 @@ function App() {
       </button>
 
       {/* this is the table section */}
-      {showTable && bookingData.length > 0 && (
-        <Table bookingData={bookingData} onDelete={deleteBookingHandler} />
-      )}
+      {/* {showTable && bookingData.length > 0 && (
+        <Table bookingData={temp} onDelete={deleteBookingHandler} />
+      )} */}
+      <Table bookingData={temp} onDelete={deleteBookingHandler} />
     </div>
   );
 }

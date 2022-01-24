@@ -3,7 +3,7 @@ import path from "path";
 import Razorpay from "razorpay";
 import cors from "cors";
 import mongoose from "mongoose";
-import Data from "./bookingdb.js";
+import dbData from "./bookingdb.js";
 import bodyParser from "body-parser";
 
 const razorpay = new Razorpay({
@@ -25,7 +25,7 @@ app.use(express.json());
 const __dirname = path.resolve();
 app.use(cors({ credentials: true, origin: true })); // Use this after the variable declaration
 
-//connecting to the database
+//connecting to the database and checking the connection
 
 mongoose
   .connect(url, {
@@ -41,8 +41,8 @@ mongoose
 
 //Endpoints
 app.post("/addData", (req, res) => {
-  const dbData = req.body;
-  Data.create(dbData, (err, data) => {
+  const data = req.body;
+  dbData.create(data, (err, data) => {
     if (err) {
       res.status(500).send(err);
     } else {
@@ -52,9 +52,21 @@ app.post("/addData", (req, res) => {
 });
 
 app.get("/addData", (req, res) => {
-  Data.find((err, data) => {
+  dbData.find((err, data) => {
     if (err) {
       res.status(500).send(err);
+    } else {
+      res.status(200).send(data);
+    }
+  });
+});
+
+app.get("/delete", (req, res) => {
+  console.log(req.query.id);
+  const idQuery = req.query.id;
+  dbData.findOneAndDelete({ id: idQuery }, (err, data) => {
+    if (err) {
+      res.status(600).send(err);
     } else {
       res.status(200).send(data);
     }
