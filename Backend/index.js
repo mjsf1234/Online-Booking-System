@@ -74,29 +74,15 @@ app.get("/delete", (req, res) => {
 });
 
 //Handling to any Post request made to this endpoint from axios
-app.post("/api/payment", (req, res) => {
-  const amount = req.body.enteredAmount.toString();
-  getAmount(amount);
-  res.send(amount);
-});
-const getAmount = (amount) => {
-  console.log("function call " + amount);
-};
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "logo.svg"));
 });
 
 //handling the invalid api request
-app.all("/*", (req, res) => {
-  res.status(400).json({
-    success: 204,
-    message: "invalid",
-  });
-});
 
 app.post("/razorpay", async (req, res) => {
-  console.log("this is reqbody " + req.body.price);
+  console.log("this is reqbody ");
   const payment_capture = 1;
   const amount = req.body.price.toString();
   const currency = "INR";
@@ -108,7 +94,7 @@ app.post("/razorpay", async (req, res) => {
   };
   try {
     const response = await razorpay.orders.create(options);
-    console.log(response);
+    console.log("res" + response);
     res.json({
       value: req.body.amountGet,
       id: response.id,
@@ -116,7 +102,7 @@ app.post("/razorpay", async (req, res) => {
       amount: response.amount,
     });
   } catch (error) {
-    console.log(error);
+    console.log("error" + error);
   }
 });
 
