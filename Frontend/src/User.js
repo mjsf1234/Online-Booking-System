@@ -2,7 +2,6 @@ import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
 import Calender from "./Calender";
-import axios from "axios";
 
 const INIT_SESSION_DETAILS = {
   name: "Yash Saraf",
@@ -11,7 +10,7 @@ const INIT_SESSION_DETAILS = {
   id: "",
 };
 
-const User = ({ onAddBooking, bookingData }) => {
+const User = ({ onAddBooking, bookingData, onPay }) => {
   const [sessionDetails, setSessionDetails] = useState(INIT_SESSION_DETAILS);
   const [isValidName, setisValidName] = useState(true);
   const [isValidemail, setIsValidEmail] = useState(true);
@@ -80,6 +79,7 @@ const User = ({ onAddBooking, bookingData }) => {
       bookedSlots: userBookedSlot,
       id: Math.random().toString(),
     };
+    onPay(userBookedSlot.length);
 
     onAddBooking(tempUserBookings);
 

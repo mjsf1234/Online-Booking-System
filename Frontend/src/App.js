@@ -23,27 +23,16 @@ const __DEV__ = document.domain === "localhost";
 const url = "http://localhost:5000/";
 
 function App() {
-  //Amount Handler Function
-  const [price, setPrice] = useState(10);
-  const [amountGet, setAmountGet] = useState(0);
-
-  const [temp, setTemp] = useState([]);
-  const [showTable, setShowTable] = useState(false);
+  // const [price, setPrice] = useState(100);
+  const [check, setCheck] = useState(false);
   const [bookingData, setBookingData] = useState([]); //  [ {name, emails, bookedSlots:[], id},  ]
 
-  const amountHandler = (amount) => {
-    setAmountGet(amount);
-    console.log("this is from amountHandler" + amountGet);
-  };
-  //adding the new booking
-  const addBookingHandler = (order) => {
-    console.log("order " + JSON.stringify(order)); // {"name":"anupam","Email":"anupam@gmail.com","id":"0.9742311685374838", bookedSlots:[] }
-
-    setShowTable(true);
-    // setPrice("10");
+  //adding the new booking to mongodb
+  async function addBookingHandler(order) {
+    console.log("order " + JSON.stringify(order)); // {"name":"mjsf","Email":"mjsf@gmail.com","id":"0.9742311685374838", bookedSlots:[] }
 
     //sending data to endpoint using axios
-    axios
+    await axios
       .post("/addData", order)
       .then((res) => {
         console.log(
@@ -53,45 +42,39 @@ function App() {
       .catch((e) => {
         console.log("error in sending the data " + e);
       });
+    //calling function to get the updates booking Data from mongodb
+    getBookingData();
+  }
 
-    setBookingData((prev) => {
-      return [order, ...prev];
-    });
-  };
-
+  // fetching the data from database on first time page load
   useEffect(() => {
-    console.log("All Bookings are: " + JSON.stringify(bookingData));
-  }, [bookingData]);
-
-  //deleting the previous booking
-  const deleteBookingHandler = (id) => {
-    setBookingData(bookingData.filter((item) => item.id != id));
-    const newData = axios.get("/delete", { params: { id: id } });
-    console.log("new data receive form database is " + JSON.stringify(newData));
-  };
+    getBookingData();
+  }, []);
 
   // getting the data from the mongodb
-  useEffect(() => {
-    async function getBookingData() {
-      const req = await axios.get("/addData");
-      const data = req.data;
-      setTemp(data);
-      console.log(
-        "booking detail recieve from the database is " +
-          JSON.stringify(req.body)
-      );
-    }
-    getBookingData();
-  }, [bookingData]);
 
-  //sending the data to mongoodb
-  useEffect(() => {
-    console.log("data to send to database " + JSON.stringify(temp));
-  }, [bookingData]);
+  async function getBookingData() {
+    const req = await axios.get("/addData");
+    const data = req.data;
+    setBookingData(data);
+    console.log(
+      "booking detail recieve from the database is " + JSON.stringify(req.body)
+    );
+  }
+
+  //deleting the booking
+  async function deleteBookingHandler(id) {
+    const newData = await axios.get("/delete", { params: { id: id } });
+    getBookingData();
+    console.log("new data receive form database is " + JSON.stringify(newData));
+  }
 
   // Razorpay function don't change this
-  async function displayRazorpay() {
-    console.log("clicked");
+
+  async function displayRazorpay(amount) {
+    const basePrice = 100;
+    const price = basePrice * amount;
+    console.log("clicked " + price);
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
@@ -113,16 +96,13 @@ function App() {
     const options = {
       key: __DEV__ ? "rzp_test_jzbfCDoTRwWmMu" : "Production KEY", // Enter the Key ID generated from the Dashboard
       currency: data.currency,
-      amount: amountGet.toString(),
+      amount: price,
       order_id: data.id,
       name: "test",
       description: "Test Transaction",
       image: url,
 
       handler: function (response) {
-        // Pass these into a receipt page.
-
-        // history.push(<Recitp);
         alert(response.razorpay_payment_id);
         alert(response.razorpay_order_id);
         alert(response.razorpay_signature);
@@ -139,23 +119,17 @@ function App() {
 
   return (
     <div className="App">
-      <User onAddBooking={addBookingHandler} bookingData={bookingData} />
-
-      <Amount amount={price} onEnter={amountHandler} />
-      <button
-        className="App-link"
-        onClick={displayRazorpay}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Pay {price}$
-      </button>
+      <User
+        onAddBooking={addBookingHandler}
+        bookingData={bookingData}
+        onPay={displayRazorpay}
+      />
 
       {/* this is the table section */}
-      {/* {showTable && bookingData.length > 0 && (
-        <Table bookingData={temp} onDelete={deleteBookingHandler} />
-      )} */}
-      <Table bookingData={temp} onDelete={deleteBookingHandler} />
+      {bookingData.length > 0 && (
+        <Table bookingData={bookingData} onDelete={deleteBookingHandler} />
+      )}
+      {/* <Table bookingData={bookingData} onDelete={deleteBookingHandler} /> */}
     </div>
   );
 }

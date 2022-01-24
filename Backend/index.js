@@ -94,9 +94,9 @@ app.post("/razorpay", async (req, res) => {
   };
   try {
     const response = await razorpay.orders.create(options);
-    console.log("res" + response);
+    console.log("res" + JSON.stringify(response));
     res.json({
-      value: req.body.amountGet,
+      value: req.body.amount,
       id: response.id,
       currency: response.currency,
       amount: response.amount,
