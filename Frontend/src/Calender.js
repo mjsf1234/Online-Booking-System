@@ -8,12 +8,11 @@ import moment from "moment";
 const Calender = ({ onAddSlot, onHide, allFilledSlots }) => {
   const min = "2022-01-19T00:00";
   const max = "2022-07-19T00:00"; //to set the max date to the calender
-
+  console.log("calender" + JSON.stringify(allFilledSlots));
   const [selectedDateTime, setselectedDateTime] = useState();
 
   const setDateTimeHandler = (event) => {
     var test = new Date(event.value);
-    var date = moment(test).format("YYYY-MM-DD");
     var datetime = moment(test).format("YYYY-MM-DDTHH:00:00.000") + "Z"; // this value of date time has to pass
     setselectedDateTime(datetime);
   };

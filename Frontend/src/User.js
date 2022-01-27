@@ -2,6 +2,9 @@ import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
 import Calender from "./Calender";
+import { Calender1 } from "./Calender1";
+import { setHours } from "date-fns";
+import setMinutes from "date-fns/setMinutes";
 
 const INIT_SESSION_DETAILS = {
   name: "Yash Saraf",
@@ -18,6 +21,10 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
   const [isCalenderVisible, setisCalenderVisible] = useState(false);
   const [allFilledSlots, setAllFilledSlots] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
 
+  // calender1 states
+  const [notAvailableSlot, setNotAvailableSlot] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
+  const [sessionDates, setSessionDates] = useState([]);
+
   //calender functions
   const onAddSlot = (sessionObject) => {
     // object=> {"start":"2022-01-20T08:00:00.000Z","end":"2022-01-20T08:00:00.000Z"}
@@ -30,6 +37,9 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
     setAllFilledSlots((prev) => {
       return [...prev, sessionObject];
     });
+
+    //calender1
+    sessionDates();
   };
 
   const showCalender = () => setisCalenderVisible(true);
@@ -100,6 +110,20 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
     }
     setAllFilledSlots(tempAllBookedSlots);
     console.log("intially data loaded as =>", tempAllBookedSlots);
+
+    //list for calender 1
+
+    let temp = [];
+    for (let i = 0; i < bookingData.length; i++) {
+      for (let j = 0; j < bookingData[i].bookedSlots.length; j++) {
+        const tempHours =
+          new Date(bookingData[i].bookedSlots[j]).getHours() - 5;
+        temp.push(setHours(setMinutes(new Date(), 0), tempHours));
+      }
+    }
+
+    setNotAvailableSlot(temp);
+    console.log("notavailable " + notAvailableSlot);
   }, [bookingData]);
 
   return (
@@ -139,6 +163,11 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           Book Appointment
         </button>
       </form>
+      <Calender1
+        notAvailableSlot={notAvailableSlot}
+        onAddSlot={onAddSlot}
+        onHide={hideCalender}
+      />
     </div>
   );
 };
