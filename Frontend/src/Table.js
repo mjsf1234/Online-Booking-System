@@ -1,19 +1,16 @@
 import "./Table.css";
 import { React, useState } from "react";
 import { Table } from "reactstrap";
+import moment from "moment";
 
 const DisplayTable = ({ bookingData, onDelete }) => {
   const [dates, setDates] = useState("");
   console.log(bookingData);
   // converting the ISO date string to simple date
   const getDate = (value) => {
-    let dates = " ";
-    const date = new Date(value);
-
-    dates =
-      date.toGMTString().slice(17, 22) +
-      "  on " +
-      date.toGMTString().slice(5, 12);
+    let dates = "";
+    let tempdate = moment(value).toString();
+    dates = dates + tempdate.slice(0, 21);
     return dates;
   };
   return (

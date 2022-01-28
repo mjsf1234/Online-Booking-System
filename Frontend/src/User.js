@@ -22,24 +22,18 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
   const [allFilledSlots, setAllFilledSlots] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
 
   // calender1 states
-  const [notAvailableSlot, setNotAvailableSlot] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
-  const [sessionDates, setSessionDates] = useState([]);
 
   //calender functions
   const onAddSlot = (sessionObject) => {
-    // object=> {"start":"2022-01-20T08:00:00.000Z","end":"2022-01-20T08:00:00.000Z"}
-
-    //session state
-    setUserBookedSlot((prev) => {
-      return [...prev, sessionObject.start];
-    });
-    //
+    console.log("date receive from calender 1" + sessionObject); // indian timing=> Fri Jan 28 2022 01:00:00 GMT+0530 (India Standard Time)
     setAllFilledSlots((prev) => {
       return [...prev, sessionObject];
     });
-
-    //calender1
-    sessionDates();
+    setUserBookedSlot((prev) => {
+      return [...prev, sessionObject];
+    });
+    console.log("user booked slot is  " + userBookedSlot); // IST timing Fri Jan 28 2022 01:00:00 GMT+0530 (India Standard Time)
+    console.log("check" + setHours(setMinutes(new Date(), 0), 12));
   };
 
   const showCalender = () => setisCalenderVisible(true);
@@ -98,32 +92,18 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
   };
 
   useEffect(() => {
-    // taking data from the bookingdata(App.js) initially
-    let tempAllBookedSlots = [];
-    for (let i = 0; i < bookingData.length; i++) {
-      for (let j = 0; j < bookingData[i].bookedSlots.length; j++) {
-        tempAllBookedSlots.push({
-          start: new Date(bookingData[i].bookedSlots[j]).toISOString(),
-          end: new Date(bookingData[i].bookedSlots[j]).toISOString(),
-        });
-      }
-    }
-    setAllFilledSlots(tempAllBookedSlots);
-    console.log("intially data loaded as =>", tempAllBookedSlots);
-
     //list for calender 1
 
     let temp = [];
     for (let i = 0; i < bookingData.length; i++) {
       for (let j = 0; j < bookingData[i].bookedSlots.length; j++) {
-        const tempHours =
-          new Date(bookingData[i].bookedSlots[j]).getHours() - 5;
+        const tempHours = new Date(bookingData[i].bookedSlots[j]).getHours();
         temp.push(setHours(setMinutes(new Date(), 0), tempHours));
       }
     }
 
-    setNotAvailableSlot(temp);
-    console.log("notavailable " + notAvailableSlot);
+    setAllFilledSlots(temp);
+    console.log("notavailable " + allFilledSlots);
   }, [bookingData]);
 
   return (
@@ -148,10 +128,15 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           onChange={emailChangeHandler}
         ></input>
         {isCalenderVisible ? (
-          <Calender
-            onHide={hideCalender}
+          // <Calender
+          //   onHide={hideCalender}
+          //   allFilledSlots={allFilledSlots}
+          //   onAddSlot={onAddSlot}
+          ///>
+          <Calender1
             allFilledSlots={allFilledSlots}
             onAddSlot={onAddSlot}
+            onHide={hideCalender}
           />
         ) : (
           <div>
@@ -163,11 +148,6 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           Book Appointment
         </button>
       </form>
-      <Calender1
-        notAvailableSlot={notAvailableSlot}
-        onAddSlot={onAddSlot}
-        onHide={hideCalender}
-      />
     </div>
   );
 };
