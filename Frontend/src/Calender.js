@@ -1,64 +1,53 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import "./Calender.css";
-import "@mobiscroll/react/dist/css/mobiscroll.min.css";
-import { Datepicker, Page } from "@mobiscroll/react";
-import moment from "moment";
+import { React, useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { setDate, setHours, setMinutes } from "date-fns";
 
-const Calender = ({ onAddSlot, onHide, allFilledSlots }) => {
-  const min = "2022-01-19T00:00";
-  const max = "2022-07-19T00:00"; //to set the max date to the calender
-  console.log("calender" + JSON.stringify(allFilledSlots));
-  const [selectedDateTime, setselectedDateTime] = useState();
+export const Calender = ({ allFilledSlots, onAddSlot, onHide }) => {
+  console.log("not avaliable slot receive is " + allFilledSlots); //IST
+  const [startDate, setStartDate] = useState();
 
-  const setDateTimeHandler = (event) => {
-    var test = new Date(event.value);
-    var datetime = moment(test).format("YYYY-MM-DDTHH:00:00.000") + "Z"; // this value of date time has to pass
-    setselectedDateTime(datetime);
+  const SelectedDateHandler = (date) => {
+    // console.log("selected Date is " + date); //IST timing
+    setStartDate(date);
   };
-
   const AddSlotHandler = (event) => {
     event.preventDefault();
-    const tempOject = {
-      start: selectedDateTime,
-      end: selectedDateTime,
-    };
-    onAddSlot(tempOject);
+    onAddSlot(startDate);
+    setStartDate();
   };
-
   const hideCalender = () => {
     onHide();
   };
-
-  useEffect(() => {
-    console.log("calender page: " + JSON.stringify(allFilledSlots));
-  }, [allFilledSlots]);
-
+  // let handleColor = (time) => {
+  //   return time.getHours() > 12 ? "text-success" : "text-danger";
+  // };
   return (
-    <Page className="md-calendar-booking">
-      <div className="mbsc-form-group">
-        <div className="mbsc-form-group-title">Please Select Date and Dime</div>
-        <Datepicker
-          display="inline"
-          controls={["calendar", "timegrid"]}
-          min={min}
-          max={max}
-          minTime="08:00"
-          maxTime="19:59"
-          stepMinute={60}
-          width={null}
-          // labels={datetimeInvalid}
-          invalid={allFilledSlots}
-          // onPageLoading={onPageLoadingDatetime}
-          cssClass="booking-datetime"
-          onChange={setDateTimeHandler}
-          on
+    <div style={{ "background-color": "white" }}>
+      <div>
+        <DatePicker
+          placeholderText="Click to Select the Date"
+          selected={startDate}
+          onChange={SelectedDateHandler}
+          showTimeSelect
+          timeIntervals={60}
+          //[ Fri Jan 28 2022 12:00:49 GMT+0530 (India Standard Time), Fri Jan 28 2022 12:00:49 GMT+0530 (India Standard Time)]
+          excludeTimes={
+            allFilledSlots
+
+            // [
+            //   setHours(setMinutes(new Date(), 0), 17),
+            //   setHours(setMinutes(new Date(), 30), 18),
+            //   setHours(setMinutes(new Date(), 0), 19),
+            //   setHours(setMinutes(new Date(), 30), 17),
+            // ]
+          }
+          //   timeClassName={handleColor}
+          dateFormat="MMMM d, yyyy h:mm aa"
         />
       </div>
       <button onClick={AddSlotHandler}>Add Slot</button>
       <button onClick={hideCalender}>Close</button>
-    </Page>
+    </div>
   );
 };
-
-export default Calender;

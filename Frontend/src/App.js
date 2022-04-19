@@ -1,6 +1,5 @@
 import "./App.css";
 import { useState, useEffect } from "react";
-import Amount from "./Amount";
 import User from "./User";
 import Table from "./Table";
 import axios from "./axios";

@@ -1,7 +1,6 @@
 import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
-import Calender from "./Calender";
 import { Calender1 } from "./Calender1";
 import { setHours } from "date-fns";
 import setMinutes from "date-fns/setMinutes";
@@ -25,7 +24,7 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
 
   //calender functions
   const onAddSlot = (sessionObject) => {
-    console.log("date receive from calender 1" + sessionObject); // indian timing=> Fri Jan 28 2022 01:00:00 GMT+0530 (India Standard Time)
+    console.log("date receive from calender " + sessionObject); // indian timing=> Fri Jan 28 2022 01:00:00 GMT+0530 (India Standard Time)
     setAllFilledSlots((prev) => {
       return [...prev, sessionObject];
     });
@@ -95,10 +94,13 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
     //list for calender 1
 
     let temp = [];
+    console.log("booking data inside useeffect", bookingData);
     for (let i = 0; i < bookingData.length; i++) {
       for (let j = 0; j < bookingData[i].bookedSlots.length; j++) {
-        const tempHours = new Date(bookingData[i].bookedSlots[j]).getHours();
-        temp.push(setHours(setMinutes(new Date(), 0), tempHours));
+        const tempDate = new Date(bookingData[i].bookedSlots[j]);
+
+        temp.push(tempDate);
+        console.log("cu;lprit is here=>", tempDate);
       }
     }
 
@@ -127,12 +129,9 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           value={sessionDetails.email}
           onChange={emailChangeHandler}
         ></input>
+
+        {console.log("all filled slot sending to calender is", allFilledSlots)}
         {isCalenderVisible ? (
-          // <Calender
-          //   onHide={hideCalender}
-          //   allFilledSlots={allFilledSlots}
-          //   onAddSlot={onAddSlot}
-          ///>
           <Calender1
             allFilledSlots={allFilledSlots}
             onAddSlot={onAddSlot}
