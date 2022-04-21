@@ -1,9 +1,7 @@
 import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
-import { Calender1 } from "./Calender1";
-import { setHours } from "date-fns";
-import setMinutes from "date-fns/setMinutes";
+import { Calender } from "./Calender";
 
 const INIT_SESSION_DETAILS = {
   name: "Yash Saraf",
@@ -18,21 +16,16 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
   const [isValidemail, setIsValidEmail] = useState(true);
   const [userBookedSlot, setUserBookedSlot] = useState([]);
   const [isCalenderVisible, setisCalenderVisible] = useState(false);
-  const [allFilledSlots, setAllFilledSlots] = useState([]); // [ {start: " " , end: " "}, {start: " " , end: " "}  ]
-
-  // calender1 states
+  const [allFilledSlots, setAllFilledSlots] = useState([]);
 
   //calender functions
   const onAddSlot = (sessionObject) => {
-    console.log("date receive from calender " + sessionObject); // indian timing=> Fri Jan 28 2022 01:00:00 GMT+0530 (India Standard Time)
     setAllFilledSlots((prev) => {
       return [...prev, sessionObject];
     });
     setUserBookedSlot((prev) => {
       return [...prev, sessionObject];
     });
-    console.log("user booked slot is  " + userBookedSlot); // IST timing Fri Jan 28 2022 01:00:00 GMT+0530 (India Standard Time)
-    console.log("check" + setHours(setMinutes(new Date(), 0), 12));
   };
 
   const showCalender = () => setisCalenderVisible(true);
@@ -53,7 +46,6 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
     if (sessionDetails.email.length > 0) {
       setIsValidEmail(true);
     }
-
     setSessionDetails((prevState) => {
       return { ...prevState, email: e.target.value };
     });
@@ -64,7 +56,6 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
 
     setisCalenderVisible(false);
 
-    // Validating inputs
     if (sessionDetails.name.length === 0) {
       setisValidName(false);
       return;
@@ -82,30 +73,20 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
       bookedSlots: userBookedSlot,
       id: Math.random().toString(),
     };
-    onPay(userBookedSlot.length);
-
-    onAddBooking(tempUserBookings);
-
+    onPay(userBookedSlot.length, tempUserBookings);
     setSessionDetails(INIT_SESSION_DETAILS);
     setUserBookedSlot([]);
   };
 
   useEffect(() => {
-    //list for calender 1
-
     let temp = [];
-    console.log("booking data inside useeffect", bookingData);
     for (let i = 0; i < bookingData.length; i++) {
       for (let j = 0; j < bookingData[i].bookedSlots.length; j++) {
         const tempDate = new Date(bookingData[i].bookedSlots[j]);
-
         temp.push(tempDate);
-        console.log("cu;lprit is here=>", tempDate);
       }
     }
-
     setAllFilledSlots(temp);
-    console.log("notavailable " + allFilledSlots);
   }, [bookingData]);
 
   return (
@@ -113,7 +94,6 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
       <div className="form-title">
         <label>Online Booking System</label>
       </div>
-
       <form onSubmit={submitFormHandler}>
         <input
           type="text"
@@ -130,9 +110,8 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           onChange={emailChangeHandler}
         ></input>
 
-        {console.log("all filled slot sending to calender is", allFilledSlots)}
         {isCalenderVisible ? (
-          <Calender1
+          <Calender
             allFilledSlots={allFilledSlots}
             onAddSlot={onAddSlot}
             onHide={hideCalender}
@@ -142,7 +121,6 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
             <button onClick={showCalender}>Book a Slot</button>
           </div>
         )}
-
         <button type="submit" className="btn-submit">
           Book Appointment
         </button>

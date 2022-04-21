@@ -4,6 +4,9 @@ import User from "./User";
 import Table from "./Table";
 import axios from "./axios";
 
+const __DEV__ = document.domain === "localhost";
+const url = "http://localhost:5000/";
+
 function loadScript(src) {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -18,30 +21,22 @@ function loadScript(src) {
   });
 }
 
-const __DEV__ = document.domain === "localhost";
-const url = "http://localhost:5000/";
-
 function App() {
-  // const [price, setPrice] = useState(100);
-  const [check, setCheck] = useState(false);
-  const [bookingData, setBookingData] = useState([]); //  [ {name, emails, bookedSlots:[], id},  ]
+  const [flag, setFlage] = useState(false);
+  const [bookingData, setBookingData] = useState([]);
 
   //adding the new booking to mongodb
   async function addBookingHandler(order) {
-    console.log("order " + JSON.stringify(order)); // {"name":"mjsf","Email":"mjsf@gmail.com","id":"0.9742311685374838", bookedSlots:[] }
-
+    // console.log("order ", tempOrder); // {"name":"mjsf","Email":"mjsf@gmail.com","id":"0.9742311685374838", bookedSlots:[] }
     //sending data to endpoint using axios
     await axios
       .post("/addData", order)
       .then((res) => {
-        console.log(
-          "data is successfully send to endpoint" + JSON.stringify(res.data)
-        );
+        console.log("data is successfully send to endpoint", res.data);
       })
       .catch((e) => {
         console.log("error in sending the data " + e);
       });
-    //calling function to get the updates booking Data from mongodb
     getBookingData();
   }
 
@@ -70,7 +65,7 @@ function App() {
 
   // Razorpay function don't change this
 
-  async function displayRazorpay(amount) {
+  async function displayRazorpay(amount, tempUserBookings) {
     const basePrice = 100;
     const price = basePrice * amount;
     console.log("clicked " + price);
@@ -90,6 +85,7 @@ function App() {
       },
       body: JSON.stringify(bodyData),
     }).then((t) => t.json());
+
     console.log("data from fetch methode");
     console.log(data);
     const options = {
@@ -102,9 +98,10 @@ function App() {
       image: url,
 
       handler: function (response) {
+        addBookingHandler(tempUserBookings);
         alert(response.razorpay_payment_id);
-        alert(response.razorpay_order_id);
-        alert(response.razorpay_signature);
+        // alert(response.razorpay_order_id);
+        // alert(response.razorpay_signature);
       },
       prefill: {
         name: "Mrityunjay Saraf",
@@ -123,14 +120,11 @@ function App() {
         bookingData={bookingData}
         onPay={displayRazorpay}
       />
-
       {/* this is the table section */}
       {bookingData.length > 0 && (
         <Table bookingData={bookingData} onDelete={deleteBookingHandler} />
       )}
-      {/* <Table bookingData={bookingData} onDelete={deleteBookingHandler} /> */}
     </div>
   );
 }
-
 export default App;

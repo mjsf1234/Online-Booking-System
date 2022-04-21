@@ -42,6 +42,7 @@ mongoose
 //Endpoints
 app.post("/addData", (req, res) => {
   const data = req.body;
+  console.log("incoming add data req", req.body);
   dbData.create(data, (err, data) => {
     if (err) {
       res.status(500).send(err);

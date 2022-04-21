@@ -1,27 +1,75 @@
+import { setHours, setMinutes, setSeconds } from "date-fns";
 import { React, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { setDate, setHours, setMinutes } from "date-fns";
+import moment from "moment";
 
 export const Calender = ({ allFilledSlots, onAddSlot, onHide }) => {
-  console.log("not avaliable slot receive is " + allFilledSlots); //IST
   const [startDate, setStartDate] = useState();
+  const [allFilledSlotsArray, setallFilledSlotArray] = useState([]);
+
+  const AllFilledSlotsToSimple = (object) => {
+    var result2 = [];
+    object.map((e) => {
+      e = new Date(Date.parse(e));
+      result2.push(
+        setHours(setMinutes(setSeconds(new Date(e), 0), 0), e.getHours())
+      );
+    });
+    return result2;
+  };
+
+  useEffect(() => {
+    setallFilledSlotArray(AllFilledSlotsToSimple(allFilledSlots));
+    // console.log("%%%%%%%", allFilledSlotsArray);
+  }, [allFilledSlots]);
 
   const SelectedDateHandler = (date) => {
-    // console.log("selected Date is " + date); //IST timing
+    // console.log("selected Date is " + new Date(Date.parse(date)));
     setStartDate(date);
   };
+
   const AddSlotHandler = (event) => {
     event.preventDefault();
-    onAddSlot(startDate);
+    var tempdate = moment(startDate).format("YYYY-MM-DD HH:mm:ss");
+    onAddSlot(tempdate);
     setStartDate();
+  };
+
+  const filterPassedTime = (time) => {
+    var tempSelectedtime = setHours(
+      setMinutes(setSeconds(new Date(time), 0), 0),
+      time.getHours()
+    );
+
+    for (var i = 0; i < allFilledSlotsArray.length; i++) {
+      if (
+        allFilledSlotsArray[i].getHours() === tempSelectedtime.getHours() &&
+        allFilledSlotsArray[i].getDate() === tempSelectedtime.getDate()
+      ) {
+        return false;
+      }
+    }
+    return true;
   };
   const hideCalender = () => {
     onHide();
   };
-  // let handleColor = (time) => {
-  //   return time.getHours() > 12 ? "text-success" : "text-danger";
-  // };
+  let handleColor = (time) => {
+    const check = () => {
+      var tempSelectedtime = new Date(time);
+      for (var i = 0; i < allFilledSlotsArray.length; i++) {
+        if (
+          allFilledSlotsArray[i].getHours() === tempSelectedtime.getHours() &&
+          allFilledSlotsArray[i].getDate() === tempSelectedtime.getDate()
+        ) {
+          return false;
+        }
+      }
+      return true;
+    };
+    return check() ? "text-success" : "text-danger";
+  };
   return (
     <div style={{ "background-color": "white" }}>
       <div>
@@ -31,18 +79,8 @@ export const Calender = ({ allFilledSlots, onAddSlot, onHide }) => {
           onChange={SelectedDateHandler}
           showTimeSelect
           timeIntervals={60}
-          //[ Fri Jan 28 2022 12:00:49 GMT+0530 (India Standard Time), Fri Jan 28 2022 12:00:49 GMT+0530 (India Standard Time)]
-          excludeTimes={
-            allFilledSlots
-
-            // [
-            //   setHours(setMinutes(new Date(), 0), 17),
-            //   setHours(setMinutes(new Date(), 30), 18),
-            //   setHours(setMinutes(new Date(), 0), 19),
-            //   setHours(setMinutes(new Date(), 30), 17),
-            // ]
-          }
-          //   timeClassName={handleColor}
+          filterTime={filterPassedTime}
+          timeClassName={handleColor}
           dateFormat="MMMM d, yyyy h:mm aa"
         />
       </div>

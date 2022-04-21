@@ -5,12 +5,13 @@ import moment from "moment";
 
 const DisplayTable = ({ bookingData, onDelete }) => {
   const [dates, setDates] = useState("");
-  console.log(bookingData);
+  // console.log(bookingData);
   // converting the ISO date string to simple date
   const getDate = (value) => {
     let dates = "";
     let tempdate = moment(value).toString();
     dates = dates + tempdate.slice(0, 21);
+
     return dates;
   };
   return (
