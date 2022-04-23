@@ -2,6 +2,7 @@ import "./User.css";
 import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
 import { Calender } from "./Calender";
+import { Button, Form } from "react-bootstrap";
 
 const INIT_SESSION_DETAILS = {
   name: "Yash Saraf",
@@ -94,22 +95,29 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
       <div className="form-title">
         <label>Online Booking System</label>
       </div>
-      <form onSubmit={submitFormHandler}>
-        <input
-          type="text"
-          className={`form-field ${!isValidName ? "invalid" : ""}`}
-          onChange={nameChangeHandler}
-          placeholder="Enter Your Name"
-          value={sessionDetails.name}
-        ></input>
-        <input
-          type="email"
-          className={`form-field ${!isValidemail ? "invalid" : ""}`}
-          placeholder="Enter Your email"
-          value={sessionDetails.email}
-          onChange={emailChangeHandler}
-        ></input>
 
+      <Form onSubmit={submitFormHandler}>
+        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+          <Form.Label>Enter Name</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter Name"
+            onChange={nameChangeHandler}
+            value={sessionDetails.name}
+            className={`form-field ${!isValidName ? "invalid" : ""}`}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter email"
+            value={sessionDetails.email}
+            onChange={emailChangeHandler}
+            className={`form-field ${!isValidemail ? "invalid" : ""}`}
+          />
+        </Form.Group>
         {isCalenderVisible ? (
           <Calender
             allFilledSlots={allFilledSlots}
@@ -118,13 +126,19 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           />
         ) : (
           <div>
-            <button onClick={showCalender}>Book a Slot</button>
+            <Button
+              variant="success"
+              style={{ margin: "1rem" }}
+              onClick={showCalender}
+            >
+              pick a slot
+            </Button>
           </div>
         )}
-        <button type="submit" className="btn-submit">
-          Book Appointment
-        </button>
-      </form>
+        <Button variant="primary" type="submit">
+          book your Slot
+        </Button>
+      </Form>
     </div>
   );
 };

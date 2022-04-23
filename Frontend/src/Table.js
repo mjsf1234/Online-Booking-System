@@ -2,6 +2,8 @@ import "./Table.css";
 import { React, useState } from "react";
 import { Table } from "reactstrap";
 import moment from "moment";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "react-bootstrap";
 
 const DisplayTable = ({ bookingData, onDelete }) => {
   const [dates, setDates] = useState("");
@@ -40,48 +42,20 @@ const DisplayTable = ({ bookingData, onDelete }) => {
                 </td>
 
                 <th>
-                  <button
+                  <Button
+                    variant="danger"
                     onClick={() => {
                       onDelete(e.id);
                     }}
                   >
                     delete
-                  </button>
+                  </Button>
                 </th>
               </tr>
             );
           })}
         </tbody>
       </Table>
-
-      {/* <table className="table">
-        <tbody>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Date</th>
-          </tr>
-          {bookingData.map((e) => {
-            return (
-              <tr key={e.id}>
-                <th>{e.name}</th>
-                <th>{e.email}</th>
-                <th>{e.bookedSlots}</th>
-
-                <th>
-                  <button
-                    onClick={() => {
-                      Ondelete(e.id);
-                    }}
-                  >
-                    delete
-                  </button>
-                </th>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table> */}
     </div>
   );
 };

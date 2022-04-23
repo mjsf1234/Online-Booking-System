@@ -1,8 +1,8 @@
 .form-main {
-  width: 50%;
-  padding: 2rem 2.5rem 1rem 2.5rem;
+  width: 35%;
+  padding: 1rem 2.5rem 1rem 2.5rem;
   margin: auto;
-  background-color: rgb(36, 25, 25);
+  background-color: white;
   box-sizing: border-box;
   box-shadow: 0 1px 8px;
   border-radius: 12px;
@@ -19,16 +19,16 @@
 }
 .form-title {
   font-size: 1.8rem;
-  font-weight: 400;
+  font-weight: 600;
   font-family: "Roboto", sans-serif;
-  text-align: center;
+  /* text-align: center; */
   margin-bottom: 1rem;
 }
 .form-title label {
-  color: white;
+  color: rgb(0, 150, 255);
 }
 .form-message {
-  text-align: center;
+  /* text-align: center; */
   width: 100%;
   border-radius: 4px;
   margin-bottom: 10px;
@@ -38,7 +38,8 @@
   border-color: red;
 }
 .form-label {
-  color: white;
+  color: black;
+  font-weight: bold;
   margin-right: 0rem;
 }
 
@@ -56,7 +57,7 @@
 .input-date {
   width: 100%;
   height: 2rem;
-  text-align: center;
+  /* text-align: center; */
 }
 .reciept {
   background-color: grey;
