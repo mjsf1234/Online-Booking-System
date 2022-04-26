@@ -3,25 +3,24 @@ import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
 import { Calender } from "./Calender";
 import { Button, Form } from "react-bootstrap";
-import { useAuth } from "./contexts/AuthContext";
 
 const INIT_SESSION_DETAILS = {
-  name: "Yash Saraf",
-
+  name: "",
   bookedSlots: [],
   id: "",
 };
 
 const User = ({ onAddBooking, bookingData, onPay }) => {
-  const { currentUser } = useAuth();
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("currentUser"))
+  );
   const [sessionDetails, setSessionDetails] = useState(INIT_SESSION_DETAILS);
-  const [isValidName, setisValidName] = useState(true);
-  const [isValidemail, setIsValidEmail] = useState(true);
   const [userBookedSlot, setUserBookedSlot] = useState([]);
   const [isCalenderVisible, setisCalenderVisible] = useState(false);
   const [allFilledSlots, setAllFilledSlots] = useState([]);
+  const showCalender = () => setisCalenderVisible(true);
+  const hideCalender = () => setisCalenderVisible(false);
 
-  //calender functions
   const onAddSlot = (sessionObject) => {
     setAllFilledSlots((prev) => {
       return [...prev, sessionObject];
@@ -31,48 +30,16 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
     });
   };
 
-  const showCalender = () => setisCalenderVisible(true);
-  const hideCalender = () => setisCalenderVisible(false);
-
-  //FirstName verifying and Handling
-  const nameChangeHandler = (e) => {
-    if (sessionDetails.name.length > 0) {
-      setisValidName(true);
-    }
-    setSessionDetails((prevState) => {
-      return { ...prevState, name: e.target.value };
-    });
-  };
-
-  //email verifying and Handling
-  const emailChangeHandler = (e) => {
-    if (sessionDetails.email.length > 0) {
-      setIsValidEmail(true);
-    }
-    setSessionDetails((prevState) => {
-      return { ...prevState, email: e.target.value };
-    });
-  };
-
   const submitFormHandler = (e) => {
     e.preventDefault();
-
     setisCalenderVisible(false);
-
-    if (sessionDetails.name.length === 0) {
-      setisValidName(false);
-      return;
-    }
-    // if (sessionDetails.email.length === 0) {
-    //   setIsValidEmail(false);
-    //   return;
-    // }
     if (userBookedSlot.length === 0) {
       alert("please choose the slot");
       return;
     }
     const tempUserBookings = {
       ...sessionDetails,
+      name: currentUser.name,
       email: currentUser.email,
       bookedSlots: userBookedSlot,
       id: Math.random().toString(),
@@ -105,9 +72,8 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           <Form.Control
             type="text"
             placeholder="Enter Name"
-            onChange={nameChangeHandler}
-            value={sessionDetails.name}
-            className={`form-field ${!isValidName ? "invalid" : ""}`}
+            value={currentUser.name}
+            readOnly
           />
         </Form.Group>
 
@@ -116,9 +82,8 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           <Form.Control
             type="email"
             placeholder="Enter email"
+            readOnly
             value={currentUser.email}
-            // onChange={emailChangeHandler}
-            className={`form-field ${!isValidemail ? "invalid" : ""}`}
           />
         </Form.Group>
         {isCalenderVisible ? (

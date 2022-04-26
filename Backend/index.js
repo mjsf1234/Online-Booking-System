@@ -1,11 +1,17 @@
 import express from "express";
 import path from "path";
+import dotenv from "dotenv";
+dotenv.config();
 import Razorpay from "razorpay";
 import cors from "cors";
 import mongoose from "mongoose";
 import dbData from "./bookingdb.js";
 import bodyParser from "body-parser";
+import { OAuth2Client } from "google-auth-library";
 
+const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+
+const users = [];
 const razorpay = new Razorpay({
   key_id: "rzp_test_jzbfCDoTRwWmMu",
   key_secret: "dWLzMFBl1YS4fKRGl5jjxgnL",
@@ -40,6 +46,30 @@ mongoose
   });
 
 //Endpoints
+
+const upsert = (array, item) => {
+  const i = array.findIndex((_item) => {
+    return _item.email === item.email;
+  });
+  if (i > -1) array[i] = item;
+  else {
+    array.push(item);
+  }
+};
+
+app.post("/api/google-login", async (req, res) => {
+  const { token } = req.body;
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.CLIENT_ID,
+  });
+
+  const { name, email, picture } = ticket.getPayload();
+  upsert(users, { name, email, picture });
+  res.status(201);
+  res.json({ name, email, picture });
+});
+
 app.post("/addData", (req, res) => {
   const data = req.body;
   console.log("incoming add data req", req.body);
@@ -103,7 +133,7 @@ app.post("/razorpay", async (req, res) => {
       amount: response.amount,
     });
   } catch (error) {
-    console.log("error" + error);
+    console.log("error", error);
   }
 });
 

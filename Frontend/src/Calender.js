@@ -71,7 +71,7 @@ export const Calender = ({ allFilledSlots, onAddSlot, onHide }) => {
     return check() ? "text-success" : "text-danger";
   };
   return (
-    <div style={{ "background-color": "white" }}>
+    <div style={{ backgroundColor: "white" }}>
       <div>
         <DatePicker
           placeholderText="Click to Select the Date"

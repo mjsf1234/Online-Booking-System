@@ -3,7 +3,6 @@ import User from "./User";
 import Table from "./Table";
 import axios from "./axios";
 import { Button } from "react-bootstrap";
-import { useAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const __DEV__ = document.domain === "localhost";
@@ -26,7 +25,9 @@ function loadScript(src) {
 const Homepage = () => {
   const [bookingData, setBookingData] = useState([]);
   const [currentUserBookingData, setCurrentUserBookingData] = useState({});
-  const { Logout, currentUser } = useAuth();
+  const [currentUser, setCurrentuser] = useState(
+    JSON.parse(localStorage.getItem("currentUser"))
+  );
   const navigate = useNavigate();
 
   async function addBookingHandler(order) {
@@ -50,7 +51,7 @@ const Homepage = () => {
     const data = req.data;
     setBookingData(data);
     console.log("booking detail recieve from the database is ", data);
-    // getCurrentUserBookingdata(data);
+
     var tempdata = data.filter((data) => {
       return data.email === currentUser.email;
     });
@@ -63,13 +64,14 @@ const Homepage = () => {
     console.log("new data receive form database is " + JSON.stringify(newData));
   }
 
-  const LogoutHandler = async () => {
-    try {
-      await Logout();
-      navigate("/login");
-    } catch (error) {
-      console.log("failed to logout", error);
-    }
+  const logoutHandler = () => {
+    localStorage.removeItem("currentUser");
+    console.log(
+      "login data in local storage is =>",
+      localStorage.getItem("currentUser")
+    );
+    setCurrentuser(null);
+    navigate("/login");
   };
 
   // Razorpay function don't change this
@@ -126,13 +128,14 @@ const Homepage = () => {
         bookingData={bookingData}
         onPay={displayRazorpay}
       />
+
       {currentUserBookingData.length > 0 && (
         <Table
           bookingData={currentUserBookingData}
           onDelete={deleteBookingHandler}
         />
       )}
-      <Button onClick={LogoutHandler}>Logout</Button>
+      <Button onClick={logoutHandler}>Logout</Button>
     </div>
   );
 };
