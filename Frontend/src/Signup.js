@@ -2,19 +2,21 @@ import { useEffect, useState, useRef } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useAuth } from "./contexts/AuthContext";
-import { async, jsonEval } from "@firebase/util";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Signup = () => {
+  const navigate = useNavigate();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPassRef = useRef();
-  const { currentUser, signup } = useAuth();
+  const { currentUser, signup, isLoggedIn } = useAuth();
   const [error, setError] = useState("");
   const [loading, setloading] = useState(false);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("return value of", currentUser, signup);
+    console.log("the value of useAuth", isLoggedIn);
 
     if (passwordRef.current.value !== confirmPassRef.current.value) {
       setError("password do not match");
@@ -27,7 +29,8 @@ export const Signup = () => {
         emailRef.current.value,
         passwordRef.current.value
       );
-      console.log(userDetails.user);
+      console.log("New signup user details=>", userDetails.user);
+      navigate("/login");
     } catch {
       setError("failed to create the account");
       setloading(false);
@@ -69,7 +72,10 @@ export const Signup = () => {
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2 ">
-        Already have an account? Login
+        Already have an account?{" "}
+        <Link to="/login">
+          <Button>Login</Button>
+        </Link>
       </div>
     </>
   );

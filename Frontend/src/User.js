@@ -3,15 +3,17 @@ import "react-dropdown/style.css";
 import React, { useState, useEffect } from "react";
 import { Calender } from "./Calender";
 import { Button, Form } from "react-bootstrap";
+import { useAuth } from "./contexts/AuthContext";
 
 const INIT_SESSION_DETAILS = {
   name: "Yash Saraf",
-  email: "yashsaraf@gmail.com",
+
   bookedSlots: [],
   id: "",
 };
 
 const User = ({ onAddBooking, bookingData, onPay }) => {
+  const { currentUser } = useAuth();
   const [sessionDetails, setSessionDetails] = useState(INIT_SESSION_DETAILS);
   const [isValidName, setisValidName] = useState(true);
   const [isValidemail, setIsValidEmail] = useState(true);
@@ -61,16 +63,17 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
       setisValidName(false);
       return;
     }
-    if (sessionDetails.email.length === 0) {
-      setIsValidEmail(false);
-      return;
-    }
+    // if (sessionDetails.email.length === 0) {
+    //   setIsValidEmail(false);
+    //   return;
+    // }
     if (userBookedSlot.length === 0) {
       alert("please choose the slot");
       return;
     }
     const tempUserBookings = {
       ...sessionDetails,
+      email: currentUser.email,
       bookedSlots: userBookedSlot,
       id: Math.random().toString(),
     };
@@ -113,8 +116,8 @@ const User = ({ onAddBooking, bookingData, onPay }) => {
           <Form.Control
             type="email"
             placeholder="Enter email"
-            value={sessionDetails.email}
-            onChange={emailChangeHandler}
+            value={currentUser.email}
+            // onChange={emailChangeHandler}
             className={`form-field ${!isValidemail ? "invalid" : ""}`}
           />
         </Form.Group>

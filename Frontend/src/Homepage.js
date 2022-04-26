@@ -2,7 +2,9 @@ import { useState, useEffect, useContext } from "react";
 import User from "./User";
 import Table from "./Table";
 import axios from "./axios";
-import { Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import { useAuth } from "./contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const __DEV__ = document.domain === "localhost";
 const url = "http://localhost:5000/";
@@ -22,13 +24,12 @@ function loadScript(src) {
 }
 
 const Homepage = () => {
-  const [isLogin, setisLogin] = useState(false);
   const [bookingData, setBookingData] = useState([]);
+  const [currentUserBookingData, setCurrentUserBookingData] = useState({});
+  const { Logout, currentUser } = useAuth();
+  const navigate = useNavigate();
 
-  //adding the new booking to mongodb
   async function addBookingHandler(order) {
-    // console.log("order ", tempOrder); // {"name":"mjsf","Email":"mjsf@gmail.com","id":"0.9742311685374838", bookedSlots:[] }
-    //sending data to endpoint using axios
     await axios
       .post("/addData", order)
       .then((res) => {
@@ -40,31 +41,38 @@ const Homepage = () => {
     getBookingData();
   }
 
-  // fetching the data from database on first time page load
   useEffect(() => {
     getBookingData();
   }, []);
-
-  // getting the data from the mongodb
 
   async function getBookingData() {
     const req = await axios.get("/addData");
     const data = req.data;
     setBookingData(data);
-    console.log(
-      "booking detail recieve from the database is " + JSON.stringify(req.body)
-    );
+    console.log("booking detail recieve from the database is ", data);
+    // getCurrentUserBookingdata(data);
+    var tempdata = data.filter((data) => {
+      return data.email === currentUser.email;
+    });
+    setCurrentUserBookingData(tempdata);
   }
 
-  //deleting the booking
   async function deleteBookingHandler(id) {
     const newData = await axios.get("/delete", { params: { id: id } });
     getBookingData();
     console.log("new data receive form database is " + JSON.stringify(newData));
   }
 
-  // Razorpay function don't change this
+  const LogoutHandler = async () => {
+    try {
+      await Logout();
+      navigate("/login");
+    } catch (error) {
+      console.log("failed to logout", error);
+    }
+  };
 
+  // Razorpay function don't change this
   async function displayRazorpay(amount, tempUserBookings) {
     const basePrice = 100;
     const price = basePrice * amount;
@@ -118,10 +126,13 @@ const Homepage = () => {
         bookingData={bookingData}
         onPay={displayRazorpay}
       />
-
-      {bookingData.length > 0 && (
-        <Table bookingData={bookingData} onDelete={deleteBookingHandler} />
+      {currentUserBookingData.length > 0 && (
+        <Table
+          bookingData={currentUserBookingData}
+          onDelete={deleteBookingHandler}
+        />
       )}
+      <Button onClick={LogoutHandler}>Logout</Button>
     </div>
   );
 };

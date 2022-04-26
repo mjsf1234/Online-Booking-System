@@ -4,6 +4,8 @@ import { auth } from "../Firebase";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 
 const AuthContext = createContext();
@@ -14,18 +16,12 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
-  console.log("auth is ", auth.createUserWithEmailAndPassword);
-
-  function validateEmail(email) {
-    const re =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  //   console.log("auth is ", auth.createUserWithEmailAndPassword);
 
   const signup = async (email, password) => {
     try {
       console.log("email and password is =>", email, password);
-      console.log("domain of email is", validateEmail(email));
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -38,10 +34,18 @@ export const AuthProvider = ({ children }) => {
 
     // return createUserWithEmailAndPassword(email, password);
   };
+  const login = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const Logout = () => {
+    return signOut(auth);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      setIsLoggedIn(true);
     });
 
     // Just return the unsubscribe function.  React will call it when it's
@@ -51,6 +55,9 @@ export const AuthProvider = ({ children }) => {
   const value = {
     currentUser,
     signup,
+    isLoggedIn,
+    Logout,
+    login,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
