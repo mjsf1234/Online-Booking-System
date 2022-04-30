@@ -22,7 +22,7 @@ function loadScript(src) {
   });
 }
 
-const Homepage = () => {
+const Homepage = ({ loginStatusHandler }) => {
   const [bookingData, setBookingData] = useState([]);
   const [currentUserBookingData, setCurrentUserBookingData] = useState({});
   const [currentUser, setCurrentuser] = useState(
@@ -71,6 +71,7 @@ const Homepage = () => {
       localStorage.getItem("currentUser")
     );
     setCurrentuser(null);
+    loginStatusHandler(false);
     navigate("/login");
   };
 
@@ -123,6 +124,12 @@ const Homepage = () => {
 
   return (
     <div>
+      {/* <div>
+        <img
+          style={{ height: "75vh", width: "70%", alignSelf: "center" }}
+          src="https://news.iitgn.ac.in/wp/wp-content/uploads/2019/07/ANK383_2224a-1280x640.jpg"
+        ></img>
+      </div> */}
       <User
         onAddBooking={addBookingHandler}
         bookingData={bookingData}

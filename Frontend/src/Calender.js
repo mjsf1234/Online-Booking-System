@@ -21,11 +21,9 @@ export const Calender = ({ allFilledSlots, onAddSlot, onHide }) => {
 
   useEffect(() => {
     setallFilledSlotArray(AllFilledSlotsToSimple(allFilledSlots));
-    // console.log("%%%%%%%", allFilledSlotsArray);
   }, [allFilledSlots]);
 
   const SelectedDateHandler = (date) => {
-    // console.log("selected Date is " + new Date(Date.parse(date)));
     setStartDate(date);
   };
 

@@ -1,21 +1,43 @@
 import "./App.css";
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Homepage from "./Homepage";
 import LoginWithGoogle from "./LoginWithGoogle";
+import ErrorPage from "./ErrorPage";
 
 function App() {
-  const [currentUser, setcurrentUser] = useState(
-    localStorage.getItem("currentUser")
-      ? JSON.parse(localStorage.getItem("currentUser"))
-      : null
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("currentUser") ? true : false
   );
-  const navigate = useNavigate();
+
+  const loginStatusHandler = (check) => {
+    setIsLoggedIn(check);
+  };
+
   return (
     <div className="App">
       <Routes>
-        <Route path="/home" element={currentUser && <Homepage />} />
-        <Route path="/login" element={<LoginWithGoogle />} />
+        <Route
+          path="/login"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/" replace />
+            ) : (
+              <LoginWithGoogle loginStatusHandler={loginStatusHandler} />
+            )
+          }
+        />
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <Homepage loginStatusHandler={loginStatusHandler} />
+            ) : (
+              <Navigate replace to="/login" />
+            )
+          }
+        />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>
   );
