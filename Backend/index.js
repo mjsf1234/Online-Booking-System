@@ -118,7 +118,7 @@ app.post("/razorpay", async (req, res) => {
   const amount = req.body.price.toString();
   const currency = "INR";
   const options = {
-    amount: (amount * 100).toString(),
+    amount: (amount * 20).toString(),
     currency,
     receipt: Math.random(),
     payment_capture,

@@ -79,6 +79,7 @@ export const Calender = ({ allFilledSlots, onAddSlot, onHide }) => {
           timeIntervals={60}
           filterTime={filterPassedTime}
           timeClassName={handleColor}
+          minDate={new Date()}
           dateFormat="MMMM d, yyyy h:mm aa"
         />
       </div>
