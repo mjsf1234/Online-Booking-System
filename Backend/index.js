@@ -20,7 +20,7 @@ const razorpay = new Razorpay({
 const app = express();
 const port = process.env.PORT || 5000;
 const url =
-  "mongodb+srv://admin:VZoyWPFoNWFPaE7t@cluster0.6jqxt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  "mongodb+srv://admin:VZoyWPFoNWFPaE7t@cluster0.6jqxt.mongodb.net/?retryWrites=true&w=majority";
 
 //middleware
 app.use(bodyParser.json());

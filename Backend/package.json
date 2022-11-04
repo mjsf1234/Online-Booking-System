@@ -19,7 +19,6 @@
     "google-auth-library": "^8.0.1",
     "mongoose": "^6.1.7",
     "node-fetch": "^3.1.0",
-    "nodemon": "^2.0.15",
     "razorpay": "^2.8.0"
   }
 }

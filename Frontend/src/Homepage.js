@@ -4,6 +4,7 @@ import Table from "./Table";
 import axios from "./axios";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const __DEV__ = document.domain === "localhost";
 const url = "http://localhost:5000/";
@@ -31,6 +32,8 @@ const Homepage = ({ loginStatusHandler }) => {
   const navigate = useNavigate();
 
   async function addBookingHandler(order) {
+    var date = moment().utcOffset("+05:30").format();
+    order["timeStamp"] = date;
     await axios
       .post("/addData", order)
       .then((res) => {
@@ -55,6 +58,13 @@ const Homepage = ({ loginStatusHandler }) => {
     var tempdata = data.filter((data) => {
       return data.email === currentUser.email;
     });
+    var tempDataBookedSlotList = [];
+    tempdata.map((e) => {
+      e.bookedSlots.map((_time) => {
+        tempDataBookedSlotList.push(_time);
+      });
+    });
+    console.log("list of booked slot iss ", tempDataBookedSlotList.sort());
 
     setCurrentUserBookingData(tempdata);
   }
