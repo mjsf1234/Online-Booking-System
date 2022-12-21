@@ -25,7 +25,7 @@ const LoginWithGoogle = ({ loginStatusHandler }) => {
     });
     const data = res.data;
     const list = res.data.email.split("@");
-    console.log("____>>>>", list[1]);
+    console.log("data from the goole-login endpoint is ", data);
     if (list[1] === "gmail.com") {
       setcurrentUser(data);
       if (localStorage.getItem("currentUser")) {
