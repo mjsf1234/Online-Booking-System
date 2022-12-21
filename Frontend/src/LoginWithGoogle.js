@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { gapi } from "gapi-script";
 import GoogleLogin from "react-google-login";
 import { useNavigate } from "react-router-dom";
 import axios from "./axios";
 
 const LoginWithGoogle = ({ loginStatusHandler }) => {
+  console.log("Client id is ", process.env.REACT_APP_GOOGLE_CLIENT_ID);
   const navigate = useNavigate();
   const [currentUser, setcurrentUser] = useState(
     localStorage.getItem("currentUser")
@@ -13,7 +15,9 @@ const LoginWithGoogle = ({ loginStatusHandler }) => {
 
   const handleFailure = (res) => {
     alert(JSON.stringify(res.error));
+    console.log("error from the handle failaure ", JSON.stringify(res));
   };
+
   const handleLogin = async (googleData) => {
     console.log("googleData is ", googleData);
     const res = await axios.post("api/google-login", {
@@ -21,7 +25,8 @@ const LoginWithGoogle = ({ loginStatusHandler }) => {
     });
     const data = res.data;
     const list = res.data.email.split("@");
-    if (list[1] === "iitgn.ac.in") {
+    console.log("____>>>>", list[1]);
+    if (list[1] === "gmail.com") {
       setcurrentUser(data);
       if (localStorage.getItem("currentUser")) {
         localStorage.removeItem("currentUser");
@@ -35,6 +40,17 @@ const LoginWithGoogle = ({ loginStatusHandler }) => {
       alert("Use IITGN email");
     }
   };
+
+  // useEffect(() => {
+  //   function start() {
+  //     gapi.client.init({
+  //       clientId: process.env.REACT_PUBLIC_GOOGLE_CLIENT_ID,
+  //       scope: "email",
+  //     });
+  //   }
+
+  //   gapi.load("client:auth2", start);
+  // }, []);
 
   return (
     <>

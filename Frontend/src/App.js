@@ -17,26 +17,31 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route
-          path="/login"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/" replace />
-            ) : (
-              <LoginWithGoogle loginStatusHandler={loginStatusHandler} />
-            )
-          }
-        />
-        <Route
-          path="/"
-          element={
-            isLoggedIn ? (
-              <Homepage loginStatusHandler={loginStatusHandler} />
-            ) : (
-              <Navigate replace to="/login" />
-            )
-          }
-        />
+        {
+          <Route
+            path="/login"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <LoginWithGoogle loginStatusHandler={loginStatusHandler} />
+              )
+            }
+          />
+        }
+        {
+          <Route
+            path="/"
+            element={
+              isLoggedIn ? (
+                <Homepage loginStatusHandler={loginStatusHandler} />
+              ) : (
+                <Navigate replace to="/login" />
+              )
+            }
+          />
+        }
+        <Route path="/" element={<Homepage />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>
