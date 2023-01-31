@@ -50,7 +50,7 @@ const Homepage = ({ loginStatusHandler }) => {
   }, []);
 
   async function getBookingData() {
-    const req = await axios.get("/addData");
+    const req = await axios.get("/getData");
     const data = req.data;
     setBookingData(data);
     console.log("booking detail recieve from the database is ", data);
@@ -140,13 +140,13 @@ const Homepage = ({ loginStatusHandler }) => {
         bookingData={bookingData}
         onPay={displayRazorpay}
       />
-
       {currentUserBookingData.length > 0 && (
         <Table
           bookingData={currentUserBookingData}
           onDelete={deleteBookingHandler}
         />
       )}
+
       <Button onClick={logoutHandler}>Logout</Button>
     </div>
   );

@@ -1,15 +1,17 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
+import axios from "axios";
 dotenv.config();
 import Razorpay from "razorpay";
 import cors from "cors";
 import mongoose from "mongoose";
 import dbData from "./bookingdb.js";
+import { createClient } from "redis";
 import bodyParser from "body-parser";
 import { OAuth2Client } from "google-auth-library";
 
-const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
+const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_IZD);
 
 const users = [];
 const razorpay = new Razorpay({
@@ -44,6 +46,15 @@ mongoose
   .catch((e) => {
     console.log(e);
   });
+
+/* Redis setup*/
+
+const redisClient = createClient({
+  socket: {
+    host: "127.0.0.1",
+    port: 6379,
+  },
+});
 
 //Endpoints
 
@@ -82,14 +93,26 @@ app.post("/addData", (req, res) => {
   });
 });
 
-app.get("/addData", (req, res) => {
-  dbData.find((err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(200).send(data);
-    }
-  });
+app.get("/getData", async (req, res) => {
+  Client.connect();
+  const data = await redisClient.get("data");
+  if (data) {
+    console.log("GOT cache");
+    res.send(JSON.parse(data));
+    redisClient.quit();
+  } else {
+    console.log("SET cache");
+
+    dbData.find((err, data) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        redisClient.set("data", JSON.stringify(data));
+        res.status(200).send(data);
+      }
+      redisClient.quit();
+    });
+  }
 });
 
 app.get("/delete", (req, res) => {
@@ -106,7 +129,7 @@ app.get("/delete", (req, res) => {
 
 //Handling to any Post request made to this endpoint from axios
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   res.sendFile(path.join(__dirname, "logo.svg"));
 });
 
